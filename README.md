@@ -1,0 +1,32 @@
+# 期末大作业 `魔兽争霸`
+
+## 说明
+
+这是 SDU 计科专业 2022 级 `高级程序语言设计` 课程的大作业，以 old school 游戏魔兽争霸为背景。
+
+## 使用
+
+暂定只通过控制台进行输入输出
+
+## 编译
+
+## 结构介绍
+
+### include\Warrior.h && src\Warrior.cpp
+
+抽象 `Warrior` ,战士类
+
+包含属性如下:
+
+- m_life 生命值
+- m_number 战士
+
+派生出 `dragon` 、`ninja`、`iceman`、`lion`、`wolf`、五种战士类
+
+包含属性:
+
+- default_life 每个战士都设置的单独的静态变量，储存其默认生命值
+
+### include\Headquarter.h && src\Headquater.cpp
+
+抽象 `Headquarter` 司令部类
