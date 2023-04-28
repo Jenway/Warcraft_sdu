@@ -4,6 +4,8 @@
 
 这是 SDU 计科专业 2022 级 `高级程序语言设计` 课程的大作业，以 old school 游戏魔兽争霸为背景。
 
+代码托管在 [Github](https://github.com/Jenway/Warcraft_sdu)上。
+
 ## 使用
 
 暂定只通过控制台进行输入输出
@@ -30,3 +32,9 @@
 ### include\Headquarter.h && src\Headquater.cpp
 
 抽象 `Headquarter` 司令部类
+
+## 收获与感想
+
+配置 cmake比上次写 (已经鸽掉的) 小恐龙有了些许进步。嘛，可能是因为还没用第三方库的原因。
+
+设计模式，`chatgpt` 告诉我工厂模式这种设计模式，让我不禁感慨自己知识的匮乏，看来，不只需要学习语言特性与轮子，还需要学习设计模式等等。

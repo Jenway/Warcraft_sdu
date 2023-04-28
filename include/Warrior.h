@@ -1,73 +1,70 @@
 // Warrior 战士类
+#if !defined(WARRIOR_H)
+#define WARRIOR_H
 
+#include "../include/Enums.h"
+#include <iostream>
+// 定义战士类
 class Warrior
 {
-private:
-    int m_number; // 战士编号
 protected:
-    int m_life; // 战士生命值
+    static WarriorType m_type;
+    static int s_defaultLife[static_cast<int>(WarriorType::Count)]; // 默认生命值
+
+    int m_life = 0;
+    int m_number = 0;
+
 public:
-    inline int number() { return this->m_number; } // 获取战士编号
-    inline int life() { return this->m_life; }     // 获取战士生命值
+    // getter
+    int getNumber() const
+    {
+        return this->m_number;
+    }
+    int getLife() const { return m_life; }
+    static int getLifeCost(int index) { return s_defaultLife[index]; }
+    WarriorType getType() const { return m_type; }
+    // setter
+    static void setDefaultLife(WarriorType type, int life)
+    {
+        s_defaultLife[static_cast<int>(type)] = life;
+    }
+    void setNumber(int number) { m_number = number; }
+    // constructor && destructor
     Warrior();
+    Warrior(WarriorType type);
+
     ~Warrior();
 };
 
-// 派生 出 dragon 、ninja、iceman、lion、wolf、五种战士类
-
-// 由于要在主函数中修改战士的生命值，所以将战士的生命值定义为 static 类型
-
+// 定义具体的战士类
 class Dragon : public Warrior
 {
-private:
-    static int default_life; // Drageon 的默认生命值
-
 public:
-    inline static void setLife(int life) { default_life = life; }
-    Dragon() { this->m_life = default_life; }
-    ~Dragon() {}
+    Dragon() : Warrior(WarriorType::dragon) {}
 };
 
 class Ninja : public Warrior
 {
-private:
-    static int default_life; // Ninja 的默认生命值
-
 public:
-    inline static void setLife(int life) { default_life = life; }
-    Ninja() { this->m_life = default_life; }
-    ~Ninja() {}
+    Ninja() : Warrior(WarriorType::ninja) {}
 };
 
 class Iceman : public Warrior
 {
-private:
-    static int default_life; // Iceman 的默认生命值
-
 public:
-    inline static void setLife(int life) { default_life = life; }
-    Iceman() { this->m_life = default_life; }
-    ~Iceman();
+    Iceman() : Warrior(WarriorType::iceman) {}
 };
 
 class Lion : public Warrior
 {
-private:
-    static int default_life; // Lion 的默认生命值
-
 public:
-    inline static void setLife(int life) { default_life = life; }
-    Lion() { this->m_life = default_life; }
-    ~Lion() {}
+    Lion() : Warrior(WarriorType::lion) {}
 };
 
 class Wolf : public Warrior
 {
-private:
-    static int default_life; // Wolf 的默认生命值
-
 public:
-    inline static void setLife(int life) { default_life = life; }
-    Wolf() { this->m_life = default_life; }
-    ~Wolf() {}
+    Wolf() : Warrior(WarriorType::wolf) {}
 };
+
+#endif // WARRIOR_H
