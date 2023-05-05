@@ -3,3 +3,4 @@ build/
 .vscode/
 test/
 实验要求.txt
+.clang-format

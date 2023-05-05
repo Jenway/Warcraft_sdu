@@ -38,3 +38,7 @@
 配置 cmake比上次写 (已经鸽掉的) 小恐龙有了些许进步。嘛，可能是因为还没用第三方库的原因。
 
 设计模式，`chatgpt` 告诉我工厂模式这种设计模式，让我不禁感慨自己知识的匮乏，看来，不只需要学习语言特性与轮子，还需要学习设计模式等等。
+
+> warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+
+`add_compile_options("$<$[C_COMPILER_ID:MSVC](C_COMPILER_ID:MSVC):/source-charset:utf-8>")`

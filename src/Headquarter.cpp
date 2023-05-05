@@ -1,8 +1,8 @@
 // src\Headquarter.cpp 司令部类的实现
 
 #include <array>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <string>
 
 #include "../include/Headquarter.h"
@@ -12,65 +12,91 @@
 int Headquarter::m_defaultLife = 0;
 
 // 设置红色司令部生成战士的顺序
-constexpr std::array<WarriorType, 5> warrior_order_red =
-    {
-        WarriorType::iceman,
-        WarriorType::lion,
-        WarriorType::wolf,
-        WarriorType::ninja,
-        WarriorType::dragon};
+constexpr std::array<WarriorType, 5> warrior_order_red = {
+    WarriorType::iceman,
+    WarriorType::lion,
+    WarriorType::wolf,
+    WarriorType::ninja,
+    WarriorType::dragon
+};
 
-constexpr std::array<WarriorType, 5> warrior_order_blue =
-    {
-        WarriorType::lion,
-        WarriorType::dragon,
-        WarriorType::ninja,
-        WarriorType::iceman,
-        WarriorType::wolf};
+constexpr std::array<WarriorType, 5> warrior_order_blue = {
+    WarriorType::lion,
+    WarriorType::dragon,
+    WarriorType::ninja,
+    WarriorType::iceman,
+    WarriorType::wolf
+};
 
 bool Headquarter::createWarrior()
 {
-    const auto &warrior_order = (Headquarter::getColor() == head_color::red) ? warrior_order_red : warrior_order_blue;
+    const auto& warrior_order = (Headquarter::getColor() == head_color::red) ? warrior_order_red : warrior_order_blue;
 
-    std::string output_color = (this->m_color == head_color::red) ? "red " : "blue ";
+    auto& index = warrior_order[m_totalWarriors];
 
-    auto &index = warrior_order[m_totalWarriors];
-
-    if (isAbleToCreate(static_cast<int>(index)))
-    {
-        auto warrior = WarriorFactory::createWarrior(index);
-        warrior->setNumber(m_totalWarriors + 1);
+    if (isAbleToCreate(static_cast<int>(index))) {
+        auto warrior = WarriorFactory::createWarrior(index, m_totalWarriors + 1);
 
         int warrior_inedx = static_cast<int>(warrior->getType());
-        std::string warrior_temp_type = warrior_type_name[warrior_inedx];
 
-        int output_warrior_count = ++this->m_warriors_count[warrior_inedx];
+        // 对Headquarter的成员变量进行修改
+        this->m_totalWarriors++;
+        this->m_warriors_count[warrior_inedx]++;
+        this->setLifeViaCost(warrior->getLife());
         // fix it later
-        std::cout << std::setw(3) << std::setfill('0') << m_totalWarriors << ' '
-                  << output_color << warrior_temp_type << " " << warrior->getNumber()
-                  << " born with strength " << warrior->getLife()
-                  << "," << output_warrior_count << " " << warrior_temp_type
-                  << " in "
-                  << output_color << "headquarter"
+
+        // 输出 log 信息
+        // Print info about the current warrior
+        std::cout << std::setw(3) << std::setfill('0') << m_totalWarriors - 1 << ' '
+                  << this->getColorName() << " " << warrior->getTypeName() << " " << warrior->getNumber()
+                  << " born with strength " << warrior->getLife();
+
+        // Print info about the current warrior's type and total count
+        std::cout << "," << this->m_warriors_count[warrior_inedx] << " " << warrior->getTypeName()
+                  << " in " << this->getColorName() << " headquarter"
                   << std::endl;
 
-        // 000 red iceman 1 born with strength 5,1 iceman in red headquarter
+        // Print info about the current warrior's weapon & morale / loyalty
+        logWarriorInfo(warrior);
 
-        this->m_totalWarriors++;
-        this->setLifeViaCost(warrior->getLife());
-        m_warriors.emplace_back(std::move(warrior)); // 将 warrior 插入到 Headquarter 的容器中
-    }
-    else
-    {
+        // 将 warrior 插入到 Headquarter 的容器中
+
+        m_warriors.emplace_back(std::move(warrior));
+
+    } else {
 
         std::cout << std::setw(3) << std::setfill('0') << m_totalWarriors << ' '
-                  << output_color
-                  << "headquarter stops making warriors"
+                  << this->getColorName()
+                  << " headquarter stops making warriors"
                   << std::endl;
         return false;
     }
 
     return true;
+}
+
+void Headquarter::logWarriorInfo(std::unique_ptr<Warrior>& warrior)
+{
+    switch (warrior->getType()) {
+    case WarriorType::dragon:
+        warrior->setMorale(static_cast<double>(this->getLife()) / static_cast<double>(warrior->getLife()));
+        std::cout << "It has a " << warrior->getWeapon(0)->getName() << ",and it's morale is " << std::fixed << std::setprecision(2) << warrior->getMorale() << std::endl;
+        break;
+    case WarriorType::ninja:
+        std::cout << "It has a " << warrior->getWeapon(0)->getName() << " and a " << warrior->getWeapon(1)->getName() << std::endl;
+        break;
+    case WarriorType::iceman:
+        std::cout << "It has a " << warrior->getWeapon(0)->getName() << std::endl;
+        break;
+    case WarriorType::lion:
+        warrior->setLoyalty(this->getLife());
+        std::cout << "It's loyalty is " << warrior->getLoyalty() << std::endl;
+        break;
+    case WarriorType::wolf:
+        break;
+    default:
+        break;
+    }
 }
 
 bool Headquarter::isAbleToCreate(int warrior_index)
