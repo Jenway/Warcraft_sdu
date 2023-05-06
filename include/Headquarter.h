@@ -17,7 +17,6 @@ private:
 
     head_color m_color = head_color::red; // 司令部所属阵营
     int m_life = 0; // 司令部生命元
-    bool m_stop = false; // 司令部状态
 
     std::vector<std::shared_ptr<Warrior>> m_warriors; // 战士列表
     // std::vector<int> m_warriors_count;                // 战士记录

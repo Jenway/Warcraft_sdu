@@ -8,6 +8,7 @@
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
 #include "../include/WarriorFactory.h"
+#include "../include/Weapon.h"
 
 int Headquarter::m_defaultLife = 0;
 
@@ -42,14 +43,14 @@ bool Headquarter::createWarrior()
         // 对Headquarter的成员变量进行修改
         this->m_totalWarriors++;
         this->m_warriors_count[warrior_inedx]++;
-        this->setLifeViaCost(warrior->getLife());
+        this->setLifeViaCost(warrior->getHP());
         // fix it later
 
         // 输出 log 信息
         // Print info about the current warrior
         std::cout << std::setw(3) << std::setfill('0') << m_totalWarriors - 1 << ' '
                   << this->getColorName() << " " << warrior->getTypeName() << " " << warrior->getNumber()
-                  << " born with strength " << warrior->getLife();
+                  << " born with strength " << warrior->getHP();
 
         // Print info about the current warrior's type and total count
         std::cout << "," << this->m_warriors_count[warrior_inedx] << " " << warrior->getTypeName()
@@ -79,7 +80,7 @@ void Headquarter::logWarriorInfo(std::unique_ptr<Warrior>& warrior)
 {
     switch (warrior->getType()) {
     case WarriorType::dragon:
-        warrior->setMorale(static_cast<double>(this->getLife()) / static_cast<double>(warrior->getLife()));
+        warrior->setMorale(static_cast<double>(this->getLife()) / static_cast<double>(warrior->getHP()));
         std::cout << "It has a " << warrior->getWeapon(0)->getName() << ",and it's morale is " << std::fixed << std::setprecision(2) << warrior->getMorale() << std::endl;
         break;
     case WarriorType::ninja:

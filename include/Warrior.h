@@ -8,22 +8,29 @@
 #include <vector>
 
 #include "../include/Enums.h"
-#include "../include/Weapon.h"
+
+// #include "../include/Weapon.h"
+// 不用包含Weapon.h，因为Weapon.h中包含了Warrior.h，会造成循环包含
+// 改为前向声明
+class Weapon;
+
 // 定义战士类
 class Warrior {
 protected:
     static WarriorType m_type;
     static int s_defaultLife[static_cast<int>(WarriorType::Count)]; // 默认生命值
 
-    int m_life = 0;
+    int m_HP = 0;
     int m_number = 0;
+    int m_attack = 0;
 
     std::vector<std::unique_ptr<Weapon>> weapons;
 
 public:
     // getter
     int getNumber() const { return this->m_number; }
-    int getLife() const { return m_life; }
+    int getHP() const { return m_HP; }
+    int getAttack() const { return m_attack; }
     static int getLifeCost(int index) { return s_defaultLife[index]; }
 
     WarriorType getType() const { return m_type; }
@@ -32,19 +39,15 @@ public:
     // setter
     static void setDefaultLife(WarriorType type, int life) { s_defaultLife[static_cast<int>(type)] = life; }
     void setNumber(int number) { m_number = number; }
-
+    void setAttack(int attack) { m_attack = attack; }
+    void setHPviaAttack(int attack);
     // add weapon
     void addWeapon(WeaponType type, int attack, int number);
 
     // indicate whether the warrior is dead
-    bool isDead() const { return m_life <= 0; }
+    bool isDead() const { return m_HP <= 0; }
 
     // for deived class to override
-
-    // virtual void printBorn() const = 0;
-    // virtual void printWeapon() const = 0;
-    // virtual void printYell() const = 0;
-    // virtual void printMarch() const = 0;
 
     // getter
     virtual double getMorale() const { return 0.0; }
@@ -58,7 +61,7 @@ public:
     Warrior();
     Warrior(WarriorType type, int number);
 
-    ~Warrior();
+    virtual ~Warrior();
 };
 
 // 定义具体的战士类
@@ -77,6 +80,7 @@ public:
     {
         addWeapon(static_cast<WeaponType>(this->m_number % 3), 0, 0);
     }
+    virtual ~Dragon() = default;
 };
 
 class Ninja : public Warrior {
@@ -87,6 +91,7 @@ public:
         addWeapon(static_cast<WeaponType>(this->m_number % 3), 0, 0);
         addWeapon(static_cast<WeaponType>(this->m_number % 3 + 1), 0, 0);
     }
+    virtual ~Ninja() = default;
 };
 
 class Iceman : public Warrior {
@@ -96,6 +101,7 @@ public:
     {
         addWeapon(static_cast<WeaponType>(this->m_number % 3), 0, 0);
     }
+    virtual ~Iceman() = default;
 };
 
 class Lion : public Warrior {
@@ -112,6 +118,7 @@ public:
         : Warrior(WarriorType::lion, number)
     {
     }
+    virtual ~Lion() = default;
 };
 
 class Wolf : public Warrior {
@@ -120,6 +127,7 @@ public:
         : Warrior(WarriorType::wolf, number)
     {
     }
+    virtual ~Wolf() = default;
 };
 
 #endif // WARRIOR_H
