@@ -5,7 +5,6 @@
 #include <string>
 
 #include "../include/Enums.h"
-#include "../include/Warrior.h"
 
 class Weapon {
 protected:
@@ -34,8 +33,23 @@ public:
     void setDestroyed(bool destroyed) { this->m_destroyed = destroyed; }
     // decrease durability
     void decreaseDurability() { this->durability = (durability == 0) ? 0 : durability - 1; }
-    // Attack
-    virtual void attack(Warrior* self, Warrior* enemy) = 0;
+    // calculate damage
+
+    virtual int enemyDamage(int attack) = 0;
+    virtual int selfDamage(int attack) = 0;
+    // use weapon
+    bool useWeapon()
+    {
+        if (isDestroyed()) {
+            return false;
+        } else {
+            decreaseDurability();
+            if (isDestroyed()) {
+                setDestroyed(true);
+            }
+            return true;
+        }
+    }
     // constructor && destructor
 
     Weapon(WeaponType type, int attack, int number = 0)
@@ -56,7 +70,8 @@ public:
         setCanBeDestroyed(can_be_destroyed = false);
     }
 
-    void attack(Warrior* self, Warrior* enemy) override;
+    int enemyDamage(int attack) override { return attack; }
+    int selfDamage(int attack) override { return 0; }
 
     virtual ~Sword() = default;
 };
@@ -70,7 +85,8 @@ public:
         setDurability(1);
     }
     // bomb的攻击力是使用者当前攻击力的40%(去尾取整)，对使用者的攻击力是对敌人取整后的攻击力的1/2(去尾取整)。耐久一次
-    void attack(Warrior* self, Warrior* enemy) override;
+    int enemyDamage(int attack) override { return attack * 4 / 10; }
+    int selfDamage(int attack) override { return enemyDamage(attack) / 2; }
     virtual ~Bomb() = default;
 };
 
@@ -83,7 +99,8 @@ public:
         setDurability(2);
     }
     // arrow的攻击力是使用者当前攻击力的30%(去尾取整)，耐久两次。
-    void attack(Warrior* self, Warrior* enemy) override;
+    int enemyDamage(int attack) override { return attack * 3 / 10; }
+    int selfDamage(int attack) override { return 0; }
     virtual ~Arrow() = default;
 };
 

@@ -1,9 +1,11 @@
 // src\Headquarter.cpp 司令部类的实现
 
+#include <algorithm>
 #include <array>
 #include <iomanip>
 #include <iostream>
 #include <string>
+
 
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
@@ -36,7 +38,7 @@ bool Headquarter::createWarrior()
     auto& index = warrior_order[m_totalWarriors];
 
     if (isAbleToCreate(static_cast<int>(index))) {
-        auto warrior = WarriorFactory::createWarrior(index, m_totalWarriors + 1);
+        auto warrior = WarriorFactory::createWarrior(index, m_totalWarriors + 1, this->getColor()); // index starts from 1, not 0. (index 0 is the hero;
 
         int warrior_inedx = static_cast<int>(warrior->getType());
 
@@ -59,9 +61,9 @@ bool Headquarter::createWarrior()
 
         // Print info about the current warrior's weapon & morale / loyalty
         logWarriorInfo(warrior);
-
+        // 将 Headquarter 的弱指针指向 warrior
+        warrior->setHomeWeakPtr(std::make_shared<Headquarter>(*this));
         // 将 warrior 插入到 Headquarter 的容器中
-
         m_warriors.emplace_back(std::move(warrior));
 
     } else {
@@ -98,6 +100,22 @@ void Headquarter::logWarriorInfo(std::unique_ptr<Warrior>& warrior)
     default:
         break;
     }
+}
+
+void Headquarter::removeWarrior(std::shared_ptr<Warrior> warrior)
+{
+    // 从容器中移除 warrior
+    auto iter = std::find(m_warriors.begin(), m_warriors.end(), warrior);
+    if (iter != m_warriors.end()) {
+        m_warriors.erase(iter);
+    }
+
+    // 对Headquarter的成员变量进行修改
+    this->m_totalWarriors--;
+    this->m_warriors_count[static_cast<int>(warrior->getType())]--;
+
+    // 从容器中移除 warrior 后，将 warrior 的指针置空
+    warrior.reset();
 }
 
 bool Headquarter::isAbleToCreate(int warrior_index)
