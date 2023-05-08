@@ -36,7 +36,6 @@ protected:
     std::shared_ptr<AbstractCity> currentCity;
     std::weak_ptr<City> cityWeakPtr; // 添加 weak_ptr
     std::weak_ptr<Headquarter> homeWeakPtr; // headquarter 的 weak_ptr
-    std::weak_ptr<AbstractCity> absCityWeakPtr; // 添加 abstractweak_ptr
 
     std::weak_ptr<Warrior> enemyWeakPtr; // 添加 weak_ptr
     std::vector<std::shared_ptr<Weapon>> weapons;
@@ -56,6 +55,8 @@ public:
     std::string getTypeName() const { return warrior_type_name[static_cast<int>(m_type)]; }
     // 改为返回智能指针
     std::shared_ptr<Weapon>& getWeapon(int index) { return weapons[index]; }
+    // 事件接口
+    void reportWeapon(int hour, int minute) const;
     // setter
     static void setDefaultLife(WarriorType type, int life) { s_defaultLife[static_cast<int>(type)] = life; }
     static void setDefaultAttack(WarriorType type, int attack) { s_defaultAttack[static_cast<int>(type)] = attack; }

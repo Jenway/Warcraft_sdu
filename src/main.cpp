@@ -1,8 +1,12 @@
 #include <algorithm>
 #include <array>
+#include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
+
+#include <stdio.h>
 
 #include "../include/City.h"
 #include "../include/Enums.h"
@@ -10,7 +14,6 @@
 #include "../include/GameClock.h"
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
-
 using namespace std;
 
 void part1_test();
@@ -18,14 +21,13 @@ void part3_test();
 
 int main(int argc, char* argv[])
 {
-    part1_test();
+    // part1_test("../test/input.txt");
+    part3_test();
     return 0;
 }
 
 void part3_test()
 {
-
-    // 输入
 
     // 第一行是t,代表测试数据组数
     int test_data_count;
@@ -40,11 +42,10 @@ void part3_test()
         // M => 每个司令部一开始都有M个生命元( 1 <= M <= 100000)
         Headquarter red(M, head_color::red);
         std::shared_ptr<Headquarter> red_ptr = std::make_shared<Headquarter>(red);
-        EventHandler redHandler(red_ptr);
-
         Headquarter blue(M, head_color::blue);
         std::shared_ptr<Headquarter> blue_ptr = std::make_shared<Headquarter>(blue);
-        EventHandler blueHandler(blue_ptr);
+
+        EventHandler eventHandler(red_ptr, blue_ptr);
 
         // N => 两个司令部之间一共有N个城市( 1 <= N <= 20 )
         std::vector<std::shared_ptr<City>> cities;
@@ -55,8 +56,8 @@ void part3_test()
         // K => lion每前进一步，忠诚度就降低K。(0<=K<=100)
         Lion::setDefaultKloyalty(K);
 
-        // TODO  T 的使用 要求输出从0时0分开始，到时间T为止(包括T)的所有事件。T以分钟为单位，0 <= T <= 6000
-        // QUESTION: 为什么要用这个？
+        // T 的使用 要求输出从0时0分开始，到时间T为止(包括T)的所有事件。T以分钟为单位，0 <= T <= 6000
+        GameClock::setEndTime(T);
 
         // 第二行：五个整数，依次是 dragon 、ninja、iceman、lion、wolf 的初始生命值。它们都大于0小于等于200
         for (int i = 0; i < 5; i++) {
@@ -79,17 +80,14 @@ void part3_test()
         // 如对第一组数据就输出 Case 1:
         std::cout << "Case " << i + 1 << ":" << std::endl;
         // 然后按恰当的顺序和格式输出到时间T为止发生的所有事件。每个事件都以事件发生的时间开头，时间格式是“时:分”，“时”有三位，“分”有两位。
-        GameClock clock;
-        bool redone = true;
-        bool blueone = true;
-        while (redone || blueone) {
-            if (redone) {
-                redone = redHandler.onClockUpdate(clock);
-            }
-            if (blueone) {
-                blueone = blueHandler.onClockUpdate(clock);
-            }
-            clock.update();
+        std::shared_ptr<GameClock> clock = std::make_shared<GameClock>();
+        eventHandler.setClock(clock);
+
+        bool isGameOver = false;
+        while (!isGameOver) {
+            eventHandler.onClockUpdate();
+            isGameOver = eventHandler.isGameOver();
+            clock->update();
         }
     }
 
@@ -121,6 +119,12 @@ void part3_test()
 
 void part1_test()
 {
+    // 由文件输入
+    // FILE* new_stdin;
+    // const char* filename = input_file_path.c_str();
+    // const char* mode = "r";
+
+    // freopen_s(&new_stdin, filename, mode, stdin);
 
     // 第一行是一个整数，代表测试数据组数。
     int test_data_count;

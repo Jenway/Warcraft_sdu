@@ -1,13 +1,34 @@
 #include "../include/EventHandler.h"
 
-bool EventHandler::onClockUpdate(GameClock& clock)
+void EventHandler::setClock(std::shared_ptr<GameClock> clock)
 {
-    int hours = clock.getHours();
-    int mins = clock.getMinutes();
+    this->clock = clock;
+    this->redHQ->setClock(clock);
+    this->blueHQ->setClock(clock);
+}
+
+bool EventHandler::isGameOver()
+{
+    // 游戏结束的条件是： 1. 双方司令部被占领； 2. 双方司令部的生命元数量都不足以制造武士。
+    if (redHQ->isOccupied() || blueHQ->isOccupied()) {
+        return true;
+    } else if (redHQ->isStopped() && blueHQ->isStopped()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool EventHandler::onClockUpdate()
+{
+    if (clock->isEnd()) {
+        return false;
+    }
+    int hours = clock->getHours();
+    int mins = clock->getMinutes();
     switch (mins) {
     case 0: // 每小时第 0 分,武士降生
         spawnWarrior();
-        logEvent(hours);
         break;
     case 5: // 每小时第 5 分,lion 逃跑
         lionEscape();
@@ -28,7 +49,7 @@ bool EventHandler::onClockUpdate(GameClock& clock)
         reportLife();
         break;
     case 55: // 每小时第 55 分,武士报告武器情况
-        reportWeapon();
+        reportWeapon(hours, mins);
         break;
     }
     return true;
@@ -36,47 +57,51 @@ bool EventHandler::onClockUpdate(GameClock& clock)
 
 void EventHandler::logEvent(int hours)
 {
-    // this->HQ->logEvent(hours);
+    // this->redHQ->logEvent(hours);
 }
 
 void EventHandler::spawnWarrior()
 {
-    this->HQ->createWarrior();
+
+    this->redHQ->createWarrior();
+
+    this->blueHQ->createWarrior();
 }
 
 void EventHandler::lionEscape()
 {
-    // this->HQ->lionEscape();
+    this->redHQ->lionEscape();
+    this->blueHQ->lionEscape();
 }
 
 void EventHandler::warriorsMarch()
 {
-    // this->HQ->warriorsMarch();
+    this->redHQ->warriorsMarch();
 }
 
 void EventHandler::wolfSnatch()
 {
-    // this->HQ->wolfSnatch();
+    this->redHQ->wolfSnatch();
 }
 
 void EventHandler::reportBattle()
 {
-    // this->HQ->reportBattle();
+    this->redHQ->reportBattle();
 }
 
 void EventHandler::warriorYell()
 {
-    // this->HQ->warriorYell();
+    this->redHQ->warriorYell();
 }
 
 void EventHandler::reportLife()
 {
-    // this->HQ->reportLife();
+    this->redHQ->reportLife();
 }
 
-void EventHandler::reportWeapon()
+void EventHandler::reportWeapon(int hour, int minute)
 {
-    // this->HQ->reportWeapon();
+    this->redHQ->reportWeapon(hour, minute);
 }
 
 // Path: src\Headquarter.cpp

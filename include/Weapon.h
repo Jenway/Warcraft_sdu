@@ -18,7 +18,7 @@ protected:
 public:
     // getter
     WeaponType getType() const { return m_type; }
-    std::string getName() const { return weapon_type_name[static_cast<int>(m_type)]; }
+    std::string getWeaponName() const { return weapon_type_name[static_cast<int>(m_type)]; }
     int getAttack() const { return m_attack; }
     int getNumber() const { return m_number; }
     int getDurability() const { return durability; }

@@ -6,13 +6,17 @@ class GameClock {
 private:
     int hours = 0;
     int minutes = 0;
+    static int end;
 
 public:
-    int getHours() const { return hours; }
-    int getMinutes() const { return minutes; }
+    int getHours() { return hours; }
+    int getMinutes() { return minutes; }
+    static int getEnd() { return end; }
+    static void setEndTime(int endtime) { end = endtime; }
+    bool isEnd();
     void update()
     {
-        minutes++;
+        minutes += 5;
         if (minutes == 60) {
             hours++;
             minutes = 0;
