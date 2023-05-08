@@ -36,6 +36,7 @@ protected:
     std::shared_ptr<AbstractCity> currentCity;
     std::weak_ptr<City> cityWeakPtr; // 添加 weak_ptr
     std::weak_ptr<Headquarter> homeWeakPtr; // headquarter 的 weak_ptr
+    std::weak_ptr<AbstractCity> absCityWeakPtr; // 添加 abstractweak_ptr
 
     std::weak_ptr<Warrior> enemyWeakPtr; // 添加 weak_ptr
     std::vector<std::shared_ptr<Weapon>> weapons;
@@ -75,7 +76,7 @@ public:
     void
     sortWeapon();
     // 战士攻击
-    void attack(Warrior* enemy);
+    void attack(std::shared_ptr<Warrior> enemy);
 
     // add weapon
     void addWeapon(WeaponType type, int attack, int number);
@@ -173,8 +174,13 @@ public:
     // 每前进一步忠诚度减少 K
     // 忠诚度为 0 时逃跑
     static void setDefaultKloyalty(int K) { K_loyalty = K; }
-    void decreaseLoyalty(int K) { loyalty -= K; }
-    void escape() const;
+    void decreaseLoyalty() { loyalty -= K_loyalty; }
+    void escape()
+    {
+        std::cout << "Lion " << m_number << " ran away" << std::endl;
+        this->dropWeapon();
+        this->setDead();
+    }
     Lion(int number, head_color color)
         : Warrior(WarriorType::lion, number, color)
     {
@@ -186,10 +192,15 @@ class Wolf : public Warrior {
 public:
     // TODO 特有方法
     // 抢夺敌人武器
-    void robWeapon(Warrior* enemy) const;
+    void robWeapon(std::shared_ptr<Warrior> enemy);
     Wolf(int number, head_color color)
         : Warrior(WarriorType::wolf, number, color)
     {
+    }
+    Wolf() = default;
+    Wolf(std::shared_ptr<Warrior> warrior)
+    {
+        Wolf(warrior->getNumber(), warrior->getHeadColor());
     }
     virtual ~Wolf() = default;
 };

@@ -6,7 +6,6 @@
 #include "../include/Weapon.h"
 #include "../include/WeaponFactory.h"
 
-
 #include <algorithm>
 #include <memory>
 #include <vector>
@@ -17,7 +16,7 @@ int Warrior::s_defaultLife[static_cast<int>(WarriorType::Count)] = { 0 };
 int Warrior::s_defaultAttack[static_cast<int>(WarriorType::Count)] = { 0 };
 int Lion::K_loyalty = 0;
 
-void ::Warrior::attack(Warrior* enemy)
+void Warrior::attack(std::shared_ptr<Warrior> enemy)
 {
     // check if self own weapon
     if (weapons.empty()) {
@@ -79,6 +78,13 @@ void Warrior::sortWeapon()
 void Warrior::march()
 {
     AbstractCity& currentCity = this->getCurrentCity();
+
+    //  判断是否 battle
+    if (currentCity.isBattle()) {
+        currentCity.battle();
+        return;
+    }
+
     AbstractCity& nextCity = currentCity.nextCity();
     // check if next city is enemy's headquarter
     if (nextCity.isHeadquarter()) {
@@ -86,6 +92,31 @@ void Warrior::march()
     } else {
         // TODO
         nextCity.addWarrior(std::shared_ptr<Warrior>(this), this->getHeadColor());
+    }
+    // 派生类特性的实现
+    switch (this->getType()) {
+    case WarriorType::lion:
+        // 每前进一步忠诚度就降低 K 忠诚度<=0 则该 lion 逃离战场,永远消失 但是已经到达敌人司令部的 lion 不会逃跑 lion 在己方司令部可能逃跑
+        dynamic_cast<Lion*>(this)->decreaseLoyalty();
+        if (this->getLoyalty() <= 0 && currentCity.isHeadquarter() == false) {
+            dynamic_cast<Lion*>(this)->escape();
+        }
+        break;
+    case WarriorType::wolf:
+        // TODO
+        break;
+    case WarriorType::ninja:
+        // TODO
+        break;
+    case WarriorType::dragon:
+        // TODO
+        break;
+    case WarriorType::iceman:
+        //    每前进一步,生命值减少 10%(减少的量要去尾取整)
+        this->setHPviaAttack(this->getHP() / 10);
+        break;
+    default:
+        break;
     }
 }
 
@@ -131,5 +162,18 @@ Warrior::~Warrior()
     }
     if (auto headquarter = homeWeakPtr.lock()) {
         headquarter->removeWarrior(std::shared_ptr<Warrior>(this));
+    }
+    if (auto headquarter = absCityWeakPtr.lock()) {
+        for (auto weapon : weapons) {
+            headquarter->dropWeapon(weapon);
+        }
+    }
+}
+
+void Wolf::robWeapon(std::shared_ptr<Warrior> enemy)
+{
+    if (enemy->getType() == WarriorType::wolf) {
+        return;
+    } else {
     }
 }

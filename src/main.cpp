@@ -6,6 +6,8 @@
 
 #include "../include/City.h"
 #include "../include/Enums.h"
+#include "../include/EventHandler.h"
+#include "../include/GameClock.h"
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
 
@@ -37,7 +39,12 @@ void part3_test()
 
         // M => 每个司令部一开始都有M个生命元( 1 <= M <= 100000)
         Headquarter red(M, head_color::red);
+        std::shared_ptr<Headquarter> red_ptr = std::make_shared<Headquarter>(red);
+        EventHandler redHandler(red_ptr);
+
         Headquarter blue(M, head_color::blue);
+        std::shared_ptr<Headquarter> blue_ptr = std::make_shared<Headquarter>(blue);
+        EventHandler blueHandler(blue_ptr);
 
         // N => 两个司令部之间一共有N个城市( 1 <= N <= 20 )
         std::vector<std::shared_ptr<City>> cities;
@@ -72,6 +79,18 @@ void part3_test()
         // 如对第一组数据就输出 Case 1:
         std::cout << "Case " << i + 1 << ":" << std::endl;
         // 然后按恰当的顺序和格式输出到时间T为止发生的所有事件。每个事件都以事件发生的时间开头，时间格式是“时:分”，“时”有三位，“分”有两位。
+        GameClock clock;
+        bool redone = true;
+        bool blueone = true;
+        while (redone || blueone) {
+            if (redone) {
+                redone = redHandler.onClockUpdate(clock);
+            }
+            if (blueone) {
+                blueone = blueHandler.onClockUpdate(clock);
+            }
+            clock.update();
+        }
     }
 
     // 样例输入
