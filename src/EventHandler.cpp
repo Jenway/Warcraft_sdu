@@ -2,6 +2,7 @@
 
 bool EventHandler::onClockUpdate(GameClock& clock)
 {
+
     int hours = clock.getHours();
     int mins = clock.getMinutes();
     switch (mins) {
@@ -28,7 +29,7 @@ bool EventHandler::onClockUpdate(GameClock& clock)
         reportLife();
         break;
     case 55: // 每小时第 55 分,武士报告武器情况
-        reportWeapon();
+        reportWeapon(hours, mins);
         break;
     }
     return true;
@@ -46,37 +47,37 @@ void EventHandler::spawnWarrior()
 
 void EventHandler::lionEscape()
 {
-    // this->HQ->lionEscape();
+    this->HQ->lionEscape();
 }
 
 void EventHandler::warriorsMarch()
 {
-    // this->HQ->warriorsMarch();
+    this->HQ->warriorsMarch();
 }
 
 void EventHandler::wolfSnatch()
 {
-    // this->HQ->wolfSnatch();
+    this->HQ->wolfSnatch();
 }
 
 void EventHandler::reportBattle()
 {
-    // this->HQ->reportBattle();
+    this->HQ->reportBattle();
 }
 
 void EventHandler::warriorYell()
 {
-    // this->HQ->warriorYell();
+    this->HQ->warriorYell();
 }
 
 void EventHandler::reportLife()
 {
-    // this->HQ->reportLife();
+    this->HQ->reportLife();
 }
 
-void EventHandler::reportWeapon()
+void EventHandler::reportWeapon(int hour, int minute)
 {
-    // this->HQ->reportWeapon();
+    this->HQ->reportWeapon(hour, minute);
 }
 
 // Path: src\Headquarter.cpp

@@ -17,7 +17,7 @@ private:
     void reportBattle();
     void warriorYell();
     void reportLife();
-    void reportWeapon();
+    void reportWeapon(int hour, int minute);
 
 public:
     bool onClockUpdate(GameClock& clock);

@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 
-
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
 #include "../include/WarriorFactory.h"
@@ -30,6 +29,65 @@ constexpr std::array<WarriorType, 5> warrior_order_blue = {
     WarriorType::iceman,
     WarriorType::wolf
 };
+
+void Headquarter::logWarriorInfo(std::unique_ptr<Warrior>& warrior)
+{
+    switch (warrior->getType()) {
+    case WarriorType::dragon:
+        warrior->setMorale(static_cast<double>(this->getLife()) / static_cast<double>(warrior->getHP()));
+        std::cout << "It has a " << warrior->getWeapon(0)->getWeaponName() << ",and it's morale is " << std::fixed << std::setprecision(2) << warrior->getMorale() << std::endl;
+        break;
+    case WarriorType::ninja:
+        std::cout << "It has a " << warrior->getWeapon(0)->getWeaponName() << " and a " << warrior->getWeapon(1)->getWeaponName() << std::endl;
+        break;
+    case WarriorType::iceman:
+        std::cout << "It has a " << warrior->getWeapon(0)->getWeaponName() << std::endl;
+        break;
+    case WarriorType::lion:
+        warrior->setLoyalty(this->getLife());
+        std::cout << "It's loyalty is " << warrior->getLoyalty() << std::endl;
+        break;
+    case WarriorType::wolf:
+        break;
+    default:
+        break;
+    }
+}
+
+void Headquarter::removeWarrior(std::shared_ptr<Warrior> warrior)
+{
+    // 从容器中移除 warrior
+    auto iter = std::find(m_warriors.begin(), m_warriors.end(), warrior);
+    if (iter != m_warriors.end()) {
+        m_warriors.erase(iter);
+    }
+
+    // 对Headquarter的成员变量进行修改
+    this->m_totalWarriors--;
+    this->m_warriors_count[static_cast<int>(warrior->getType())]--;
+
+    // 从容器中移除 warrior 后，将 warrior 的指针置空
+    warrior.reset();
+}
+
+bool Headquarter::isAbleToCreate(int warrior_index)
+{
+    return (this->getLife() - Warrior::getLifeCost(warrior_index)) < 0 ? false : true;
+}
+
+Headquarter::Headquarter()
+{
+    this->m_life = 0;
+    this->m_color = head_color::red;
+}
+
+Headquarter::Headquarter(int life, head_color color)
+{
+    this->m_life = life;
+    this->m_color = color;
+}
+
+// 事件处理函数接口
 
 bool Headquarter::createWarrior()
 {
@@ -78,59 +136,71 @@ bool Headquarter::createWarrior()
     return true;
 }
 
-void Headquarter::logWarriorInfo(std::unique_ptr<Warrior>& warrior)
+void Headquarter::lionEscape()
 {
-    switch (warrior->getType()) {
-    case WarriorType::dragon:
-        warrior->setMorale(static_cast<double>(this->getLife()) / static_cast<double>(warrior->getHP()));
-        std::cout << "It has a " << warrior->getWeapon(0)->getName() << ",and it's morale is " << std::fixed << std::setprecision(2) << warrior->getMorale() << std::endl;
-        break;
-    case WarriorType::ninja:
-        std::cout << "It has a " << warrior->getWeapon(0)->getName() << " and a " << warrior->getWeapon(1)->getName() << std::endl;
-        break;
-    case WarriorType::iceman:
-        std::cout << "It has a " << warrior->getWeapon(0)->getName() << std::endl;
-        break;
-    case WarriorType::lion:
-        warrior->setLoyalty(this->getLife());
-        std::cout << "It's loyalty is " << warrior->getLoyalty() << std::endl;
-        break;
-    case WarriorType::wolf:
-        break;
-    default:
-        break;
+    // 遍历容器中的lion
+    for (auto& warrior : m_warriors) {
+        if (warrior->getType() == WarriorType::lion) {
+            // 如果lion的忠诚度小于等于0，则lion逃跑
+            if (warrior->getLoyalty() <= 0) {
+                std::cout << std::setw(3) << std::setfill('0') << m_totalWarriors << ' '
+                          << this->getColorName() << " lion " << warrior->getNumber()
+                          << " ran away" << std::endl;
+                // 从容器中移除lion
+                // 保留lion的指针，调用lion的析构函数与lion的指针置空
+                std::shared_ptr<Lion> lion = std::dynamic_pointer_cast<Lion>(warrior);
+                lion->escape();
+                removeWarrior(warrior);
+                lion.reset();
+            }
+        }
     }
 }
 
-void Headquarter::removeWarrior(std::shared_ptr<Warrior> warrior)
+void Headquarter::warriorsMarch()
 {
-    // 从容器中移除 warrior
-    auto iter = std::find(m_warriors.begin(), m_warriors.end(), warrior);
-    if (iter != m_warriors.end()) {
-        m_warriors.erase(iter);
+    for (auto& warrior : m_warriors) {
+        warrior->march();
     }
-
-    // 对Headquarter的成员变量进行修改
-    this->m_totalWarriors--;
-    this->m_warriors_count[static_cast<int>(warrior->getType())]--;
-
-    // 从容器中移除 warrior 后，将 warrior 的指针置空
-    warrior.reset();
 }
 
-bool Headquarter::isAbleToCreate(int warrior_index)
+void Headquarter::wolfSnatch()
 {
-    return (this->getLife() - Warrior::getLifeCost(warrior_index)) < 0 ? false : true;
+    for (auto& warrior : m_warriors) {
+        if (warrior->getType() == WarriorType::wolf) {
+            std::shared_ptr<Wolf> wolf = std::dynamic_pointer_cast<Wolf>(warrior);
+            // TODO wolf snatch
+        }
+    }
 }
 
-Headquarter::Headquarter()
+void Headquarter::reportBattle()
 {
-    this->m_life = 0;
-    this->m_color = head_color::red;
+    for (auto& warrior : m_warriors) {
+        std::cout << " " << warrior->getHP() << " " << warrior->getTypeName() << " in " << this->getColorName() << " headquarter" << std::endl;
+    }
 }
 
-Headquarter::Headquarter(int life, head_color color)
+void Headquarter::warriorYell()
 {
-    this->m_life = life;
-    this->m_color = color;
+    for (auto& warrior : m_warriors) {
+        if (warrior->getType() == WarriorType::dragon) {
+            std::shared_ptr<Dragon> dragon = std::dynamic_pointer_cast<Dragon>(warrior);
+            dragon->yell();
+        }
+    }
+}
+
+void Headquarter::reportLife()
+{
+    // TODO 每小时第 50 分,司令部报告生命值
+    // 000:50 120 elements in blue headquarter
+    std::cout << "000:50 120 elements in blue headquarter";
+}
+
+void Headquarter::reportWeapon(int hour, int minute)
+{
+    for (auto& warrior : m_warriors) {
+        warrior->reportWeapon(hour, minute);
+    }
 }

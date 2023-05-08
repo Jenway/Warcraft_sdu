@@ -14,3 +14,11 @@ endif()
 # add the executable
 aux_source_directory(src/. SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/test")
+    enable_testing()
+
+    add_executable(test1 test/test1.cpp)
+
+    add_test(NAME test1 COMMAND test1)
+endif()

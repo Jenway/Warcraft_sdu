@@ -1,8 +1,12 @@
 #include <algorithm>
 #include <array>
+#include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
+
+#include <stdio.h>
 
 #include "../include/City.h"
 #include "../include/Enums.h"
@@ -10,22 +14,25 @@
 #include "../include/GameClock.h"
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
-
 using namespace std;
 
-void part1_test();
-void part3_test();
+void part1_test(std::string input_file_path);
+void part3_test(std::string input_file_path);
 
 int main(int argc, char* argv[])
 {
-    part1_test();
+    // part1_test("../test/input.txt");
     return 0;
 }
 
-void part3_test()
+void part3_test(std::string input_file_path)
 {
+    // FILE* new_stdin;
+    // const char* filename = input_file_path.c_str();
+    // const char* mode = "r";
 
-    // 输入
+    // freopen_s(&new_stdin, filename, mode, stdin);
+    // 由文件输入
 
     // 第一行是t,代表测试数据组数
     int test_data_count;
@@ -119,8 +126,14 @@ void part3_test()
     // 005:50 10 elements in blue headquarter
 }
 
-void part1_test()
+void part1_test(std::string input_file_path)
 {
+    // 由文件输入
+    // FILE* new_stdin;
+    // const char* filename = input_file_path.c_str();
+    // const char* mode = "r";
+
+    // freopen_s(&new_stdin, filename, mode, stdin);
 
     // 第一行是一个整数，代表测试数据组数。
     int test_data_count;

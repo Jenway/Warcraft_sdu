@@ -28,6 +28,16 @@ public:
     AbstractCity& previousCity() override { return *this; }
     bool isHeadquarter() const override { return true; }
     void addWarrior(std::shared_ptr<Warrior> warrior, head_color color) override { }
+    // 事件接口
+    void logEvent(int hours); // 事件记录
+    void lionEscape(); // lion 逃跑
+    void warriorsMarch(); // 武士前进
+    void wolfSnatch(); // wolf 抢武器
+    void reportBattle(); // 报告战斗情况
+    void warriorYell(); // 武士欢呼
+    void reportLife(); // 司令部报告生命值
+    void reportWeapon(int hour, int minute); // 武士报告武器情况
+
     // getter
     int getLife() const { return this->m_life; } // 获取司令部生命元
     head_color getColor() const { return this->m_color; } // 获取司令部阵营

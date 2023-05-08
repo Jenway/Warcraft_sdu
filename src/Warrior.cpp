@@ -7,6 +7,7 @@
 #include "../include/WeaponFactory.h"
 
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -134,6 +135,30 @@ void Warrior::addWeapon(WeaponType type, int attack, int number)
     auto weapon = WeaponFactory::createWeapon(type, attack);
     weapon->setNumber(number);
     weapons.emplace_back(std::move(weapon));
+}
+
+void Warrior::reportWeapon(int hour, int minute) const // 输出武器信息
+{
+    // e.g.
+    // 000:55 blue lion 1 has 0 sword 1 bomb 0 arrow and 10 elements
+    std::cout << this->getHeadColorName() << " " << this->getTypeName() << " " << this->getNumber() << " has ";
+    int sword = 0, bomb = 0, arrow = 0;
+    for (auto& weapon : weapons) {
+        switch (weapon->getType()) {
+        case WeaponType::sword:
+            sword++;
+            break;
+        case WeaponType::bomb:
+            bomb++;
+            break;
+        case WeaponType::arrow:
+            arrow++;
+            break;
+        default:
+            break;
+        }
+    }
+    std::cout << sword << " sword " << bomb << " bomb " << arrow << " arrow and " << this->getHP() << " elements" << std::endl;
 }
 
 Warrior::Warrior()
