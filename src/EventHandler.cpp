@@ -100,6 +100,7 @@ void EventHandler::reportLife()
 }
 
 void EventHandler::reportWeapon(int hour, int minute)
+void EventHandler::reportWeapon(int hour, int minute)
 {
     this->redHQ->reportWeapon(hour, minute);
 }

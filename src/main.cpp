@@ -1,7 +1,5 @@
 #include <algorithm>
 #include <array>
-#include <cstdio>
-#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -16,17 +14,16 @@
 #include "../include/Warrior.h"
 using namespace std;
 
-void part1_test();
-void part3_test();
+void part1_test(std::string input_file_path);
+void part3_test(std::string input_file_path);
 
 int main(int argc, char* argv[])
 {
-    // part1_test("../test/input.txt");
-    part3_test();
-    return 0;
+    // part1_test();
+    // return 0;
 }
 
-void part3_test()
+void part3_test(std::string input_file_path)
 {
 
     // 第一行是t,代表测试数据组数
@@ -117,7 +114,7 @@ void part3_test()
     // 005:50 10 elements in blue headquarter
 }
 
-void part1_test()
+void part1_test(std::string input_file_path)
 {
     // 由文件输入
     // FILE* new_stdin;

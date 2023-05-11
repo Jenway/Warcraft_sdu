@@ -19,7 +19,7 @@ public:
         minutes += 5;
         if (minutes == 60) {
             hours++;
-            minutes = 0;
+            minutes = 5;
         }
     }
 };
