@@ -57,6 +57,7 @@ public:
     std::shared_ptr<Weapon>& getWeapon(int index) { return weapons[index]; }
     // 事件接口
     void reportWeapon(int hour, int minute) const;
+    void beingRobbed();
     // setter
     static void setDefaultLife(WarriorType type, int life) { s_defaultLife[static_cast<int>(type)] = life; }
     static void setDefaultAttack(WarriorType type, int attack) { s_defaultAttack[static_cast<int>(type)] = attack; }
@@ -64,18 +65,16 @@ public:
     void setAttack(int attack) { m_attack = attack; }
     void setHPviaAttack(int attack);
     void setHeadColor(head_color headColor) { m_headColor = headColor; }
+    // 这个函数仅仅修改了 m_isAlive 的值
     void setDead() { m_isAlive = false; }
 
     // 与城市交互
+    void setCity(std::shared_ptr<AbstractCity> city) { this->currentCity = city; }
     void setWeakCityptr(std::weak_ptr<City> cityWeakPtr) { this->cityWeakPtr = cityWeakPtr; }
     void setHomeWeakPtr(std::weak_ptr<Headquarter> homeWeakPtr) { this->homeWeakPtr = homeWeakPtr; }
-    bool operator==(const Warrior& other) const
-    {
-        return this->m_number == other.m_number;
-    }
+    bool operator==(const Warrior& other) const { return this->m_number == other.m_number; }
     // TODO 武器排序
-    void
-    sortWeapon();
+    void sortWeapon();
     // 战士攻击
     void attack(std::shared_ptr<Warrior> enemy);
 
@@ -176,6 +175,7 @@ public:
     // 忠诚度为 0 时逃跑
     static void setDefaultKloyalty(int K) { K_loyalty = K; }
     void decreaseLoyalty() { loyalty -= K_loyalty; }
+    // 这个函数仅仅会修改 m_isAlive 的值、掉落武器、和输出log
     void escape()
     {
         std::cout << "Lion " << m_number << " ran away" << std::endl;
@@ -193,7 +193,7 @@ class Wolf : public Warrior {
 public:
     // TODO 特有方法
     // 抢夺敌人武器
-    void robWeapon(std::shared_ptr<Warrior> enemy);
+    void robWeapon();
     Wolf(int number, head_color color)
         : Warrior(WarriorType::wolf, number, color)
     {

@@ -79,20 +79,19 @@ void Warrior::sortWeapon()
 void Warrior::march()
 {
     AbstractCity& currentCity = this->getCurrentCity();
-
-    //  判断是否 battle
-    if (currentCity.isBattle()) {
-        currentCity.battle();
+    // 如果当前城市是敌人的司令部,则战士到达敌人司令部,游戏结束
+    if (currentCity.isHeadquarter()) {
+        dynamic_cast<Headquarter&>(currentCity).occupy();
         return;
     }
+    std::shared_ptr<AbstractCity> nextCity = currentCity.nextCity();
+    // 从当前城市离开
+    dynamic_cast<City&>(currentCity).removeWarrior(std::shared_ptr<Warrior>(this));
 
-    AbstractCity& nextCity = currentCity.nextCity();
-    // check if next city is enemy's headquarter
-    if (nextCity.isHeadquarter()) {
-        // TODO
+    if (nextCity->isHeadquarter()) {
+        nextCity->addWarrior(std::shared_ptr<Warrior>(this), this->getHeadColor());
     } else {
-        // TODO
-        nextCity.addWarrior(std::shared_ptr<Warrior>(this), this->getHeadColor());
+        nextCity->addWarrior(std::shared_ptr<Warrior>(this), this->getHeadColor());
     }
     // 派生类特性的实现
     switch (this->getType()) {
@@ -104,13 +103,10 @@ void Warrior::march()
         }
         break;
     case WarriorType::wolf:
-        // TODO
         break;
     case WarriorType::ninja:
-        // TODO
         break;
     case WarriorType::dragon:
-        // TODO
         break;
     case WarriorType::iceman:
         //    每前进一步,生命值减少 10%(减少的量要去尾取整)
@@ -182,6 +178,7 @@ Warrior::Warrior(WarriorType type, int number, head_color color)
 
 Warrior::~Warrior()
 {
+    // TODO 待修改，判断条件有问题
     if (auto city = cityWeakPtr.lock()) { // 检查 weak_ptr 是否仍然有效
         city->removeWarrior(std::shared_ptr<Warrior>(this));
     }
@@ -190,10 +187,24 @@ Warrior::~Warrior()
     }
 }
 
-void Wolf::robWeapon(std::shared_ptr<Warrior> enemy)
+void Wolf::robWeapon()
 {
-    if (enemy->getType() == WarriorType::wolf) {
-        return;
-    } else {
-    }
+    // std::shared_ptr<City> city = std::make_shared<City>(this->getCurrentCity());
+    // // 如果有敌人
+    // if (city->getWarriorCount() < 2) {
+    //     return;
+    // }
+    // std::shared_ptr<Warrior> enemy = city->getEnemy(this->getHeadColor());
+    // if (enemy->getType() == WarriorType::wolf) {
+    //     return;
+    // } else {
+    //     // 如果敌人也是 wolf,则不抢夺
+    //     if (enemy->getType() == WarriorType::wolf) {
+    //         return;
+    //     } else {
+
+    //         // TODO enemy being robbed
+    //         enemy->beingRobbed();
+    //     }
+    // }
 }

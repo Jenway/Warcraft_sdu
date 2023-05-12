@@ -1,7 +1,10 @@
 #include <algorithm>
 #include <array>
 #include <iostream>
+#include <iterator>
 #include <memory>
+#include <ranges>
+#include <string>
 #include <vector>
 
 #include <stdio.h>
@@ -38,8 +41,8 @@ void part3_test(std::string input_file_path)
 
         // M => 每个司令部一开始都有M个生命元( 1 <= M <= 100000)
         Headquarter red(M, head_color::red);
-        std::shared_ptr<Headquarter> red_ptr = std::make_shared<Headquarter>(red);
         Headquarter blue(M, head_color::blue);
+        std::shared_ptr<Headquarter> red_ptr = std::make_shared<Headquarter>(red);
         std::shared_ptr<Headquarter> blue_ptr = std::make_shared<Headquarter>(blue);
 
         EventHandler eventHandler(red_ptr, blue_ptr);
@@ -57,17 +60,18 @@ void part3_test(std::string input_file_path)
         GameClock::setEndTime(T);
 
         // 第二行：五个整数，依次是 dragon 、ninja、iceman、lion、wolf 的初始生命值。它们都大于0小于等于200
+
+        istream_iterator<int> i1(cin), i2;
+        vector<int> lives { i1, i2 };
         for (int i = 0; i < 5; i++) {
-            int life;
-            cin >> life;
-            Warrior::setDefaultLife(static_cast<WarriorType>(i), life);
+            Warrior::setDefaultLife(static_cast<WarriorType>(i), lives[i]);
         }
 
         // 第三行：五个整数，依次是 dragon 、ninja、iceman、lion、wolf 的攻击力。它们都大于0小于等于200
+        istream_iterator<int> i3(cin), i4;
+        vector<int> attacks { i3, i4 };
         for (int i = 0; i < 5; i++) {
-            int attack;
-            cin >> attack;
-            Warrior::setDefaultAttack(static_cast<WarriorType>(i), attack);
+            Warrior::setDefaultAttack(static_cast<WarriorType>(i), attacks[i]);
         }
 
         // 输出
@@ -78,6 +82,7 @@ void part3_test(std::string input_file_path)
         std::cout << "Case " << i + 1 << ":" << std::endl;
         // 然后按恰当的顺序和格式输出到时间T为止发生的所有事件。每个事件都以事件发生的时间开头，时间格式是“时:分”，“时”有三位，“分”有两位。
         std::shared_ptr<GameClock> clock = std::make_shared<GameClock>();
+        eventHandler.setCities(cities);
         eventHandler.setClock(clock);
 
         bool isGameOver = false;
@@ -87,31 +92,6 @@ void part3_test(std::string input_file_path)
             clock->update();
         }
     }
-
-    // 样例输入
-    // 1
-    // 20 1 10 400
-    // 20 20 30 10 20
-    // 5 5 5 5 5
-    // 样例输出
-    // Case 1:
-    // 000:00 blue lion 1 born
-    // Its loyalty is 10
-    // 000:10 blue lion 1 marched to city 1 with 10 elements and force 5
-    // 000:50 20 elements in red headquarter
-    // 000:50 10 elements in blue headquarter
-    // 000:55 blue lion 1 has 0 sword 1 bomb 0 arrow and 10 elements
-    // 001:05 blue lion 1 ran away
-    // 001:50 20 elements in red headquarter
-    // 001:50 10 elements in blue headquarter
-    // 002:50 20 elements in red headquarter
-    // 002:50 10 elements in blue headquarter
-    // 003:50 20 elements in red headquarter
-    // 003:50 10 elements in blue headquarter
-    // 004:50 20 elements in red headquarter
-    // 004:50 10 elements in blue headquarter
-    // 005:50 20 elements in red headquarter
-    // 005:50 10 elements in blue headquarter
 }
 
 void part1_test(std::string input_file_path)
@@ -120,7 +100,6 @@ void part1_test(std::string input_file_path)
     // FILE* new_stdin;
     // const char* filename = input_file_path.c_str();
     // const char* mode = "r";
-
     // freopen_s(&new_stdin, filename, mode, stdin);
 
     // 第一行是一个整数，代表测试数据组数。

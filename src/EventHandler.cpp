@@ -1,4 +1,5 @@
 #include "../include/EventHandler.h"
+#include "../include/City.h"
 
 void EventHandler::setClock(std::shared_ptr<GameClock> clock)
 {
@@ -9,10 +10,11 @@ void EventHandler::setClock(std::shared_ptr<GameClock> clock)
 
 bool EventHandler::isGameOver()
 {
-    // 游戏结束的条件是： 1. 双方司令部被占领； 2. 双方司令部的生命元数量都不足以制造武士。
+    // 游戏结束的条件是： 1. 双方司令部被占领； 2. 双方司令部的生命元数量都不足以制造武士,且已经没有武士
     if (redHQ->isOccupied() || blueHQ->isOccupied()) {
         return true;
-    } else if (redHQ->isStopped() && blueHQ->isStopped()) {
+    } else if (redHQ->isStopped() && blueHQ->isStopped()
+        && redHQ->getWarriorSum() == 0 && blueHQ->getWarriorSum() == 0) {
         return true;
     } else {
         return false;
@@ -24,9 +26,7 @@ bool EventHandler::onClockUpdate()
     if (clock->isEnd()) {
         return false;
     }
-    int hours = clock->getHours();
-    int mins = clock->getMinutes();
-    switch (mins) {
+    switch (clock->getMinutes()) {
     case 0: // 每小时第 0 分,武士降生
         spawnWarrior();
         break;
@@ -49,27 +49,22 @@ bool EventHandler::onClockUpdate()
         reportLife();
         break;
     case 55: // 每小时第 55 分,武士报告武器情况
-        reportWeapon(hours, mins);
+        reportWeapon();
         break;
     }
     return true;
-}
-
-void EventHandler::logEvent(int hours)
-{
-    // this->redHQ->logEvent(hours);
 }
 
 void EventHandler::spawnWarrior()
 {
 
     this->redHQ->createWarrior();
-
     this->blueHQ->createWarrior();
 }
 
 void EventHandler::lionEscape()
 {
+    // 从西到东 HQ的容器里存储着所有狮子的指针，所以不用遍历城市
     this->redHQ->lionEscape();
     this->blueHQ->lionEscape();
 }
@@ -77,32 +72,53 @@ void EventHandler::lionEscape()
 void EventHandler::warriorsMarch()
 {
     this->redHQ->warriorsMarch();
+    this->blueHQ->warriorsMarch();
 }
 
 void EventHandler::wolfSnatch()
 {
     this->redHQ->wolfSnatch();
+    this->blueHQ->wolfSnatch();
 }
 
 void EventHandler::reportBattle()
 {
     this->redHQ->reportBattle();
+    this->blueHQ->reportBattle();
 }
 
 void EventHandler::warriorYell()
 {
     this->redHQ->warriorYell();
+    this->blueHQ->warriorYell();
 }
 
 void EventHandler::reportLife()
 {
     this->redHQ->reportLife();
+    this->blueHQ->reportLife();
 }
 
-void EventHandler::reportWeapon(int hour, int minute)
-void EventHandler::reportWeapon(int hour, int minute)
+void EventHandler::reportWeapon()
 {
-    this->redHQ->reportWeapon(hour, minute);
+    this->redHQ->reportWeapon();
+    this->blueHQ->reportWeapon();
+}
+
+// set cities
+void EventHandler::setCities(std::vector<std::shared_ptr<City>> cities)
+{
+    this->cities = cities;
+}
+
+void EventHandler::battle()
+{
+    // 从西到东遍历城市，塔塔开~
+    redHQ->battle();
+    for (auto city : cities) {
+        city->battle();
+    }
+    blueHQ->battle();
 }
 
 // Path: src\Headquarter.cpp

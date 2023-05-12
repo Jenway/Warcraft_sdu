@@ -10,8 +10,10 @@ class EventHandler {
 private:
     std::shared_ptr<Headquarter> redHQ;
     std::shared_ptr<Headquarter> blueHQ;
+
+    std::vector<std::shared_ptr<City>> cities;
     std::shared_ptr<GameClock> clock;
-    void logEvent(int hours);
+
     void spawnWarrior();
     void lionEscape();
     void warriorsMarch();
@@ -19,10 +21,12 @@ private:
     void reportBattle();
     void warriorYell();
     void reportLife();
-    void reportWeapon(int hour, int minute);
+    void reportWeapon();
+    void battle();
 
 public:
     void setClock(std::shared_ptr<GameClock> clock);
+    void setCities(std::vector<std::shared_ptr<City>> cities);
     bool onClockUpdate();
     bool isGameOver();
     EventHandler() = delete;
