@@ -34,9 +34,8 @@ private:
 
 public:
     // override
-    std::shared_ptr<AbstractCity> nextCity() override { return nullptr; }
+    std::shared_ptr<AbstractCity> nextCity(head_color color) override;
     std::shared_ptr<AbstractCity> previousCity() override { return nullptr; }
-    bool isHeadquarter()override { return true; }
     // 事件接口
     void logEvent(int hours); // 事件记录
     void lionEscape(); // lion 逃跑
@@ -66,7 +65,7 @@ public:
 
     bool createWarrior(); // 创建战士
     // 这个函数仅会删除 Headquarter 中的 warrior 指针
-    void removeWarrior(std::shared_ptr<Warrior> warrior); // 移除战士
+    void removeWarriorptrInHead(std::shared_ptr<Warrior> warrior); // 移除战士
     bool isAbleToCreate(int warrior_index); // 是否能够创建战士
 
     Headquarter(int life, head_color color);

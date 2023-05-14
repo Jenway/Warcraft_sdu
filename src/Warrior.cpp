@@ -7,6 +7,7 @@
 #include "../include/WeaponFactory.h"
 
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -76,29 +77,36 @@ void Warrior::sortWeapon()
     });
 }
 
-void Warrior::march()
+void Warrior::march(int hour, int minute)
 {
-    AbstractCity& currentCity = this->getCurrentCity();
-    // 如果当前城市是敌人的司令部,则战士到达敌人司令部,游戏结束
-    if (currentCity.isHeadquarter()) {
-        dynamic_cast<Headquarter&>(currentCity).occupy();
-        return;
-    }
-    std::shared_ptr<AbstractCity> nextCity = currentCity.nextCity();
-    // 从当前城市离开
-    dynamic_cast<City&>(currentCity).removeWarrior(std::shared_ptr<Warrior>(this));
 
-    if (nextCity->isHeadquarter()) {
-        nextCity->addWarrior(std::shared_ptr<Warrior>(this), this->getHeadColor());
-    } else {
-        nextCity->addWarrior(std::shared_ptr<Warrior>(this), this->getHeadColor());
+    auto currentCity = this->getCurrentCity();
+
+    // 如果当前城市是敌人的司令部,则战士到达敌人司令部,游戏结束
+    if (currentCity->isHeadquarter()) {
+        auto current = std::dynamic_pointer_cast<Headquarter>(currentCity);
+        auto temp = current->getColor();
+        if (current->getColor() != this->getHeadColor()) {
+
+            current->occupy();
+            return;
+        }
     }
+    std::shared_ptr<AbstractCity> nextCity = currentCity->nextCity(m_headColor);
+    // 从当前城市离开
+    if (!currentCity->isHeadquarter()) {
+
+        currentCity->removeWarrior(std::shared_ptr<Warrior>(this));
+    }
+
+    nextCity->addWarrior(std::shared_ptr<Warrior>(this), this->getHeadColor());
+
     // 派生类特性的实现
     switch (this->getType()) {
     case WarriorType::lion:
         // 每前进一步忠诚度就降低 K 忠诚度<=0 则该 lion 逃离战场,永远消失 但是已经到达敌人司令部的 lion 不会逃跑 lion 在己方司令部可能逃跑
         dynamic_cast<Lion*>(this)->decreaseLoyalty();
-        if (this->getLoyalty() <= 0 && currentCity.isHeadquarter() == false) {
+        if (this->getLoyalty() <= 0 && currentCity->isHeadquarter() == false) {
             dynamic_cast<Lion*>(this)->escape();
         }
         break;
@@ -115,6 +123,10 @@ void Warrior::march()
     default:
         break;
     }
+    // 000:10 red iceman 1 marched to city 1 with 20 elements and force 30
+
+    std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
+    std::cout << this->getHeadColorName() << ' ' << this->getTypeName() << ' ' << this->getNumber() << " marched to city " << currentCity->getCityNumber() + 1 << " with " << this->getHP() << " elements and force " << this->getAttack() << std::endl;
 }
 
 void Warrior::setHPviaAttack(int attack)
@@ -179,32 +191,32 @@ Warrior::Warrior(WarriorType type, int number, head_color color)
 Warrior::~Warrior()
 {
     // TODO 待修改，判断条件有问题
-    if (auto city = cityWeakPtr.lock()) { // 检查 weak_ptr 是否仍然有效
-        city->removeWarrior(std::shared_ptr<Warrior>(this));
-    }
-    if (auto headquarter = homeWeakPtr.lock()) {
-        headquarter->removeWarrior(std::shared_ptr<Warrior>(this));
-    }
+    // if (auto city = cityWeakPtr.lock()) { // 检查 weak_ptr 是否仍然有效
+    //     city->removeWarrior(std::shared_ptr<Warrior>(this));
+    // }
+    // if (auto headquarter = homeWeakPtr.lock()) {
+    //     headquarter->removeWarrior(std::shared_ptr<Warrior>(this));
+    // }
 }
 
 void Wolf::robWeapon()
 {
-    // std::shared_ptr<City> city = std::make_shared<City>(this->getCurrentCity());
-    // // 如果有敌人
-    // if (city->getWarriorCount() < 2) {
-    //     return;
-    // }
-    // std::shared_ptr<Warrior> enemy = city->getEnemy(this->getHeadColor());
-    // if (enemy->getType() == WarriorType::wolf) {
-    //     return;
-    // } else {
-    //     // 如果敌人也是 wolf,则不抢夺
-    //     if (enemy->getType() == WarriorType::wolf) {
-    //         return;
-    //     } else {
+    std::shared_ptr<AbstractCity> city = this->currentCity;
+    // 有无敌人是不用判断的
+    this->enemyWeakPtr = city->getEnemy(this->getHeadColor());
 
-    //         // TODO enemy being robbed
-    //         enemy->beingRobbed();
-    //     }
-    // }
+    // 如果敌人是 wolf,则不抢夺
+    if (enemyWeakPtr->getType() == WarriorType::wolf) {
+        return;
+    } else {
+        // TODO enemy being robbed
+        // 抢夺敌人的武器
+        // 会抢到敌人编号最小的那种武器 如果敌人有多件这样的武器,则全部抢来
+        // Wolf 手里武器也不能超过 10 件 如果敌人 arrow 太多没法都抢来,那就先抢没用过的
+        enemyWeakPtr->sortWeapon();
+        for (auto& weapon : enemyWeakPtr->getWeapons()) {
+            int temp = weapon->getNumber();
+            auto weaponType = weapon->getType();
+        }
+    }
 }

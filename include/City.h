@@ -16,23 +16,27 @@ private:
 
 public:
     // override
-    std::shared_ptr<AbstractCity> nextCity() override
+
+    std::shared_ptr<AbstractCity> nextCity(head_color color) override
     {
-        return nullptr;
+        if (color == head_color::red) {
+            return m_rightCity;
+        } else {
+            return m_leftCity;
+        }
     }
     std::shared_ptr<AbstractCity> previousCity() override
     {
         return nullptr;
     }
-    bool isHeadquarter() override { return false; }
 
-    void addWarrior(std::shared_ptr<Warrior> warrior, head_color color);
+    // void addWarrior(std::shared_ptr<Warrior> warrior, head_color color);
 
     // Function for getting the number of warriors in the city
     int getWarriorCount() { return m_warriors_blue.size() + m_warriors_red.size(); }
 
     // Function for getting the number of the city
-    int getCityNumber() { return cityNumber; }
+    int getCityNumber() override { return cityNumber; }
 
     // Function for getting the team of the warrior in the city (returns NONE if there is no warrior)
     head_color getWarriorTeam()
@@ -52,6 +56,7 @@ public:
     City(int number)
         : cityNumber(number)
     {
+        this->isThisHeadquater = false;
     }
     virtual ~City() { }
 };

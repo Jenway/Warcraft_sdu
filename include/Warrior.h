@@ -34,10 +34,10 @@ protected:
     bool m_isAlive = true;
     //  战士所在城市
     std::shared_ptr<AbstractCity> currentCity;
-    std::weak_ptr<City> cityWeakPtr; // 添加 weak_ptr
-    std::weak_ptr<Headquarter> homeWeakPtr; // headquarter 的 weak_ptr
+    // std::weak_ptr<City> cityWeakPtr; // 添加 weak_ptr
+    // std::weak_ptr<Headquarter> homeWeakPtr; // headquarter 的 weak_ptr
 
-    std::weak_ptr<Warrior> enemyWeakPtr; // 添加 weak_ptr
+    std::shared_ptr<Warrior> enemyWeakPtr; // 添加 weak_ptr
     std::vector<std::shared_ptr<Weapon>> weapons;
 
 public:
@@ -47,14 +47,14 @@ public:
     int getAttack() const { return m_attack; }
     head_color getHeadColor() const { return m_headColor; }
     std::string getHeadColorName() const { return (m_headColor == head_color::red) ? "red" : "blue"; }
-    AbstractCity& getCurrentCity() const { return *currentCity; }
+    std::shared_ptr<AbstractCity> getCurrentCity() const { return currentCity; }
     bool isAlive() const { return m_isAlive; }
     static int getLifeCost(int index) { return s_defaultLife[index]; }
 
     WarriorType getType() const { return m_type; }
     std::string getTypeName() const { return warrior_type_name[static_cast<int>(m_type)]; }
-    // 改为返回智能指针
-    std::shared_ptr<Weapon>& getWeapon(int index) { return weapons[index]; }
+    // 返回全部武器
+    std::vector<std::shared_ptr<Weapon>>& getWeapons() { return weapons; }
     // 事件接口
     void reportWeapon(int hour, int minute) const;
     void beingRobbed();
@@ -70,8 +70,8 @@ public:
 
     // 与城市交互
     void setCity(std::shared_ptr<AbstractCity> city) { this->currentCity = city; }
-    void setWeakCityptr(std::weak_ptr<City> cityWeakPtr) { this->cityWeakPtr = cityWeakPtr; }
-    void setHomeWeakPtr(std::weak_ptr<Headquarter> homeWeakPtr) { this->homeWeakPtr = homeWeakPtr; }
+    // void setWeakCityptr(std::weak_ptr<City> cityWeakPtr) { this->cityWeakPtr = cityWeakPtr; }
+    // void setHomeWeakPtr(std::weak_ptr<Headquarter> homeWeakPtr) { this->homeWeakPtr = homeWeakPtr; }
     bool operator==(const Warrior& other) const { return this->m_number == other.m_number; }
     // TODO 武器排序
     void sortWeapon();
@@ -84,9 +84,12 @@ public:
     // void addWeapon(Weapon* weapon) { weapons.emplace_back(weapon); }
     void addWeapon(std::unique_ptr<Weapon>& weapon) { weapons.emplace_back(std::move(weapon)); }
     // TODO 战士死亡后掉落武器
+    void getWeapon(std::vector<std::shared_ptr<Weapon>>& weaponVec) { }
     void dropWeapon() { weapons.clear(); }
+    // 清理内存
+    void die() { }
     // TODO 战士前进
-    void march();
+    void march(int hour, int minute);
 
     // indicate whether the warrior is dead
     bool isDead() const { return m_HP <= 0; }
@@ -112,6 +115,7 @@ public:
 class Dragon : public Warrior {
 private:
     double morale = 0.0;
+    bool cheerStatus = false;
 
 public:
     // getter
@@ -120,9 +124,12 @@ public:
     void setMorale(double morale) override { this->morale = morale; }
 
     // TODO 特有方法
-    void yell() const
+    void setCheerStatus() { cheerStatus = true; }
+    bool getCheerStatus() const { return cheerStatus; }
+    void yell()
     {
         std::cout << "Yell" << std::endl;
+        cheerStatus = false;
     }
 
     Dragon(int number, head_color color)
@@ -178,7 +185,6 @@ public:
     // 这个函数仅仅会修改 m_isAlive 的值、掉落武器、和输出log
     void escape()
     {
-        std::cout << "Lion " << m_number << " ran away" << std::endl;
         this->dropWeapon();
         this->setDead();
     }

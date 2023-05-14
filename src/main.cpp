@@ -23,6 +23,7 @@ void part3_test(std::string input_file_path);
 int main(int argc, char* argv[])
 {
     // part1_test();
+    part3_test("");
     // return 0;
 }
 
@@ -48,10 +49,25 @@ void part3_test(std::string input_file_path)
         EventHandler eventHandler(red_ptr, blue_ptr);
 
         // N => 两个司令部之间一共有N个城市( 1 <= N <= 20 )
-        std::vector<std::shared_ptr<City>> cities;
-        for (int i = 0; i < N; i++) {
-            cities.push_back(std::make_shared<City>(i));
+        std::shared_ptr<AbstractCity> city = std::make_unique<City>(0);
+        red_ptr->setRightCity(city);
+        city->setLeftCity(red_ptr);
+        std::vector<std::shared_ptr<AbstractCity>> cities;
+        cities.emplace_back(city);
+
+        for (int i = 1; i < N - 1; i++) {
+            std::shared_ptr<AbstractCity> cityPtr = std::make_unique<City>(i);
+            cities.back()->setRightCity(cityPtr);
+            city->setLeftCity(cities.back());
+            cities.emplace_back(city);
         }
+        std::cout << cities.size() << std::endl;
+        city = std::make_unique<City>(N - 1);
+        cities.back()->setRightCity(city);
+        city->setLeftCity(cities.back());
+        city->setRightCity(blue_ptr);
+        blue_ptr->setLeftCity(city);
+        cities.emplace_back(city);
 
         // K => lion每前进一步，忠诚度就降低K。(0<=K<=100)
         Lion::setDefaultKloyalty(K);
@@ -61,17 +77,20 @@ void part3_test(std::string input_file_path)
 
         // 第二行：五个整数，依次是 dragon 、ninja、iceman、lion、wolf 的初始生命值。它们都大于0小于等于200
 
-        istream_iterator<int> i1(cin), i2;
-        vector<int> lives { i1, i2 };
+        // istream_iterator<int> i1(cin), i2;
+        // vector<int> lives { i1, i2 };
         for (int i = 0; i < 5; i++) {
-            Warrior::setDefaultLife(static_cast<WarriorType>(i), lives[i]);
+            int life;
+            cin >> life;
+            Warrior::setDefaultLife(static_cast<WarriorType>(i), life);
         }
-
         // 第三行：五个整数，依次是 dragon 、ninja、iceman、lion、wolf 的攻击力。它们都大于0小于等于200
-        istream_iterator<int> i3(cin), i4;
-        vector<int> attacks { i3, i4 };
+        // istream_iterator<int> i3(cin), i4;
+        // vector<int> attacks { i3, i4 };
         for (int i = 0; i < 5; i++) {
-            Warrior::setDefaultAttack(static_cast<WarriorType>(i), attacks[i]);
+            int attack;
+            cin >> attack;
+            Warrior::setDefaultAttack(static_cast<WarriorType>(i), attack);
         }
 
         // 输出
@@ -82,7 +101,7 @@ void part3_test(std::string input_file_path)
         std::cout << "Case " << i + 1 << ":" << std::endl;
         // 然后按恰当的顺序和格式输出到时间T为止发生的所有事件。每个事件都以事件发生的时间开头，时间格式是“时:分”，“时”有三位，“分”有两位。
         std::shared_ptr<GameClock> clock = std::make_shared<GameClock>();
-        eventHandler.setCities(cities);
+        // eventHandler.setCities(cities);
         eventHandler.setClock(clock);
 
         bool isGameOver = false;

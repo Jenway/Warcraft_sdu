@@ -27,7 +27,7 @@ private:
 public:
     void setClock(std::shared_ptr<GameClock> clock);
     void setCities(std::vector<std::shared_ptr<City>> cities);
-    bool onClockUpdate();
+    void onClockUpdate();
     bool isGameOver();
     EventHandler() = delete;
     EventHandler(std::shared_ptr<Headquarter> redHQ, std::shared_ptr<Headquarter> blueHQ)

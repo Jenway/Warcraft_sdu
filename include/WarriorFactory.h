@@ -11,7 +11,7 @@
 
 class WarriorFactory {
 public:
-    static std::unique_ptr<Warrior> createWarrior(WarriorType type, int number,head_color color) {
+    static std::shared_ptr<Warrior> createWarrior(WarriorType type, int number,head_color color) {
         switch (type) {
             case WarriorType::dragon:
                 return std::make_unique<Dragon>(number,color);
