@@ -10,7 +10,7 @@ class Weapon {
 protected:
     WeaponType m_type;
     int m_attack = 0;
-    int m_number = 0;
+    // int m_number = 0;
     int durability = 0;
     bool m_destroyed = false;
     bool can_be_destroyed = false;
@@ -20,7 +20,7 @@ public:
     WeaponType getType() const { return m_type; }
     std::string getWeaponName() const { return weapon_type_name[static_cast<int>(m_type)]; }
     int getAttack() const { return m_attack; }
-    int getNumber() const { return m_number; }
+    // int getNumber() const { return m_number; }
     int getDurability() const { return durability; }
     bool getCanBeDestroyed() const { return can_be_destroyed; }
     bool isDestroyed() const { return durability == 0 && can_be_destroyed; }
@@ -29,7 +29,7 @@ public:
     void setAttack(int attack) { this->m_attack = attack; }
     void setDurability(int durability) { this->durability = durability; }
     void setCanBeDestroyed(bool can_be_destroyed) { this->can_be_destroyed = can_be_destroyed; }
-    void setNumber(int number) { this->m_number = number; }
+    // void setNumber(int number) { this->m_number = number; }
     void setDestroyed(bool destroyed) { this->m_destroyed = destroyed; }
     // decrease durability
     void decreaseDurability() { this->durability = (durability == 0) ? 0 : durability - 1; }
@@ -52,10 +52,8 @@ public:
     }
     // constructor && destructor
 
-    Weapon(WeaponType type, int attack, int number = 0)
+    Weapon(WeaponType type)
         : m_type(type)
-        , m_attack(attack)
-        , m_number(number)
     {
     }
 
@@ -64,8 +62,8 @@ public:
 
 class Sword : public Weapon {
 public:
-    Sword(int attack)
-        : Weapon(WeaponType::sword, attack, 0)
+    Sword()
+        : Weapon(WeaponType::sword)
     {
         setCanBeDestroyed(can_be_destroyed = false);
     }
@@ -78,8 +76,8 @@ public:
 
 class Bomb : public Weapon {
 public:
-    Bomb(int attack)
-        : Weapon(WeaponType::bomb, attack)
+    Bomb()
+        : Weapon(WeaponType::bomb)
     {
         setCanBeDestroyed(can_be_destroyed = true);
         setDurability(1);
@@ -92,8 +90,8 @@ public:
 
 class Arrow : public Weapon {
 public:
-    Arrow(int attack)
-        : Weapon(WeaponType::arrow, attack)
+    Arrow()
+        : Weapon(WeaponType::arrow)
     {
         setCanBeDestroyed(can_be_destroyed = true);
         setDurability(2);

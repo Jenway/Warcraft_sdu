@@ -1,3 +1,5 @@
+#include <cstddef>
+#include <type_traits>
 #if !defined(ABSTRACT_CITY_H)
 
 #define ABSTRACT_CITY_H
@@ -13,8 +15,8 @@ protected:
     // 在这个城市掉落的武器
     std::vector<std::shared_ptr<Weapon>> weapons;
     // 在这个城市的武士
-    std::vector<std::shared_ptr<Warrior>> m_warriors_blue;
-    std::vector<std::shared_ptr<Warrior>> m_warriors_red;
+    std::shared_ptr<Warrior> m_warriors_blue;
+    std::shared_ptr<Warrior> m_warriors_red;
     // 状态，是否有红蓝武士
     bool m_redWarriorExists = false;
     bool m_blueWarriorExists = false;
@@ -42,6 +44,9 @@ public:
     // battle 相关
     void battle();
     void attackOnBattle(std::shared_ptr<Warrior> red, std::shared_ptr<Warrior> blue);
+
+    // 武士相关
+    void reportWeapon(int hour, int minute);
     // 输入敌人颜色，返回对应的武士
     std::shared_ptr<Warrior> getEnemy(head_color color);
 
@@ -49,7 +54,7 @@ public:
     void addWarrior(std::shared_ptr<Warrior> warrior, head_color color);
     // 是否存在对应颜色的武士
     bool hasWarrior(head_color color);
-    void removeWarrior(std::shared_ptr<Warrior> warrior);
+    void removeWarrior(head_color color);
     virtual ~AbstractCity() = default;
 };
 #endif // ABSTRACT_CITY_H

@@ -49,24 +49,24 @@ void part3_test(std::string input_file_path)
         EventHandler eventHandler(red_ptr, blue_ptr);
 
         // N => 两个司令部之间一共有N个城市( 1 <= N <= 20 )
-        std::shared_ptr<AbstractCity> city = std::make_unique<City>(0);
+        std::shared_ptr<City> city = std::make_unique<City>(0);
         red_ptr->setRightCity(city);
         city->setLeftCity(red_ptr);
-        std::vector<std::shared_ptr<AbstractCity>> cities;
+        std::vector<std::shared_ptr<City>> cities;
         cities.emplace_back(city);
 
         for (int i = 1; i < N - 1; i++) {
-            std::shared_ptr<AbstractCity> cityPtr = std::make_unique<City>(i);
+            std::shared_ptr<City> cityPtr = std::make_unique<City>(i);
             cities.back()->setRightCity(cityPtr);
-            city->setLeftCity(cities.back());
-            cities.emplace_back(city);
+            cityPtr->setLeftCity(cities.back());
+            cities.emplace_back(cityPtr);
         }
-        std::cout << cities.size() << std::endl;
         city = std::make_unique<City>(N - 1);
         cities.back()->setRightCity(city);
         city->setLeftCity(cities.back());
         city->setRightCity(blue_ptr);
         blue_ptr->setLeftCity(city);
+
         cities.emplace_back(city);
 
         // K => lion每前进一步，忠诚度就降低K。(0<=K<=100)
@@ -101,7 +101,7 @@ void part3_test(std::string input_file_path)
         std::cout << "Case " << i + 1 << ":" << std::endl;
         // 然后按恰当的顺序和格式输出到时间T为止发生的所有事件。每个事件都以事件发生的时间开头，时间格式是“时:分”，“时”有三位，“分”有两位。
         std::shared_ptr<GameClock> clock = std::make_shared<GameClock>();
-        // eventHandler.setCities(cities);
+        eventHandler.setCities(cities);
         eventHandler.setClock(clock);
 
         bool isGameOver = false;

@@ -1,7 +1,11 @@
 #include "../include/AbstractCity.h"
 #include "../include/Warrior.h"
+#include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <memory>
+#include <string>
+#include <vector>
 
 // warrior add & remove
 void AbstractCity::addWarrior(std::shared_ptr<Warrior> warrior, head_color color)
@@ -12,10 +16,10 @@ void AbstractCity::addWarrior(std::shared_ptr<Warrior> warrior, head_color color
     } else {
         if (color == head_color::red) {
             m_redWarriorExists = true;
-            m_warriors_red.emplace_back(warrior);
+            m_warriors_red = warrior;
         } else {
             m_blueWarriorExists = true;
-            m_warriors_blue.emplace_back(warrior);
+            m_warriors_blue = warrior;
         }
     }
 }
@@ -30,19 +34,29 @@ bool AbstractCity::hasWarrior(head_color color)
 }
 
 // 这个函数仅会删除 city 中的 warrior 指针
-void AbstractCity::removeWarrior(std::shared_ptr<Warrior> warrior)
+void AbstractCity::removeWarrior(head_color color)
 {
-    if (warrior->getHeadColor() == head_color::red) {
-        // 从 m_warriors_red 中移除
-        if (!m_warriors_red.empty()) {
-            m_warriors_red.pop_back();
-        }
+    if (color == head_color::red) {
+        m_warriors_red.reset();
+        m_redWarriorExists = false;
 
     } else {
-        // 从 m_warriors_blue 中移除
-        if (!m_warriors_blue.empty()) {
-            m_warriors_blue.pop_back();
-        }
+        m_warriors_blue.reset();
+        m_blueWarriorExists = false;
+    }
+}
+
+void AbstractCity::reportWeapon(int hour, int minute)
+{
+    if (m_redWarriorExists) {
+        std::cout << std::setfill('0') << std::setw(3) << hour << ":" << std::setw(2) << minute << " ";
+        std::cout << "red " << m_warriors_red->getTypeName() << " " << m_warriors_red->getNumber() << " has ";
+        m_warriors_red->reportWeapon(hour, minute);
+    }
+    if (m_blueWarriorExists) {
+        std::cout << std::setfill('0') << std::setw(3) << hour << ":" << std::setw(2) << minute << " ";
+        std::cout << "blue " << m_warriors_blue->getTypeName() << " " << m_warriors_blue->getNumber() << " has ";
+        m_warriors_blue->reportWeapon(hour, minute);
     }
 }
 
@@ -51,8 +65,8 @@ void AbstractCity::battle()
 {
     if (m_redWarriorExists && m_blueWarriorExists) {
         // 塔塔开~
-        while (this->m_warriors_red.back()->isAlive() || this->m_warriors_red.back()->isAlive()) {
-            this->attackOnBattle(this->m_warriors_red[0], this->m_warriors_blue[0]);
+        while (this->m_warriors_red->isAlive() || this->m_warriors_red->isAlive()) {
+            this->attackOnBattle(this->m_warriors_red, this->m_warriors_blue);
         }
     } else {
         return;
@@ -109,8 +123,8 @@ void AbstractCity::attackOnBattle(std::shared_ptr<Warrior> red, std::shared_ptr<
 std::shared_ptr<Warrior> AbstractCity::getEnemy(head_color color)
 {
     if (color == head_color::red) {
-        return m_warriors_blue[0];
+        return m_warriors_blue;
     } else {
-        return m_warriors_red[0];
+        return m_warriors_red;
     }
 }

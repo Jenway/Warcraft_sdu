@@ -9,6 +9,11 @@ void EventHandler::setClock(std::shared_ptr<GameClock> clock)
     this->blueHQ->setClock(clock);
 }
 
+void EventHandler::setCities(std::vector<std::shared_ptr<City>> cities)
+{
+    this->cities = cities;
+}
+
 bool EventHandler::isGameOver()
 {
     // 如果时间结束，游戏结束
@@ -34,6 +39,7 @@ void EventHandler::onClockUpdate()
     switch (clock->getMinutes()) {
     case 0: // 每小时第 0 分,武士降生
         spawnWarrior();
+
         break;
     case 5: // 每小时第 5 分,lion 逃跑
         lionEscape();
@@ -81,6 +87,7 @@ void EventHandler::warriorsMarch()
 {
 
     this->redHQ->warriorsMarch();
+
     this->blueHQ->warriorsMarch();
 }
 
@@ -110,8 +117,12 @@ void EventHandler::reportLife()
 
 void EventHandler::reportWeapon()
 {
-    this->redHQ->reportWeapon();
-    this->blueHQ->reportWeapon();
+    int hour = clock->getHours();
+    int minute = clock->getMinutes();
+    // 从西到东遍历城市，报告武器情况
+    for (auto city : cities) {
+        city->reportWeapon(hour, minute);
+    }
 }
 
 void EventHandler::battle()

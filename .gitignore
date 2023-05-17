@@ -2,6 +2,8 @@ build/
 .cache/
 .vscode/
 test/
+.vs/
+out/
 实验要求.txt
 .clang-format
 final_project.code-workspace

@@ -9,15 +9,15 @@
 
 class WeaponFactory {
 public:
-    static std::unique_ptr<Weapon> createWeapon(WeaponType type, int attack)
+    static std::unique_ptr<Weapon> createWeapon(WeaponType type)
     {
         switch (type) {
         case WeaponType::sword:
-            return std::make_unique<Sword>(attack);
+            return std::make_unique<Sword>();
         case WeaponType::bomb:
-            return std::make_unique<Bomb>(attack);
+            return std::make_unique<Bomb>();
         case WeaponType::arrow:
-            return std::make_unique<Arrow>(attack);
+            return std::make_unique<Arrow>();
         default:
             throw std::invalid_argument("Invalid weapon type");
         }

@@ -33,7 +33,16 @@ public:
     // void addWarrior(std::shared_ptr<Warrior> warrior, head_color color);
 
     // Function for getting the number of warriors in the city
-    int getWarriorCount() { return m_warriors_blue.size() + m_warriors_red.size(); }
+    int getWarriorCount()
+    {
+        if (m_redWarriorExists && m_blueWarriorExists) {
+            return 2;
+        } else if (m_redWarriorExists || m_blueWarriorExists) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
     // Function for getting the number of the city
     int getCityNumber() override { return cityNumber; }

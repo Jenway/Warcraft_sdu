@@ -11,7 +11,6 @@
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
 #include "../include/WarriorFactory.h"
-#include "../include/Weapon.h"
 
 int Headquarter::m_defaultLife = 0;
 
@@ -47,7 +46,6 @@ bool Headquarter::createWarrior()
     if (!isAbleToCreate(static_cast<int>(index))) {
         return false;
     }
-    this->m_warrior_index = (this->m_warrior_index + 1) % 5;
     /*
     //原来在 part2中的设定: 如果不能创建，就跳过这个 warrior，继续下一个
     while (!isAbleToCreate(static_cast<int>(index))) {
@@ -66,7 +64,6 @@ bool Headquarter::createWarrior()
     auto warrior = WarriorFactory::createWarrior(index, m_totalWarriors + 1, this->getColor()); // index starts from 1, not 0. (index 0 is the hero;
 
     int warrior_inedx = static_cast<int>(warrior->getType());
-
     // 对Headquarter的成员变量进行修改
     this->m_totalWarriors++;
     // 这里本来打算用个 map 来存储 每种warrior各自 的数量，但是感觉没必要，直接用数组就行了
@@ -82,17 +79,17 @@ bool Headquarter::createWarrior()
         std::cout << "Its morale is " << std::fixed << std::setprecision(2) << warrior->getMorale() << std::endl;
     }
     if (warrior->getType() == WarriorType::lion) {
+
         warrior->setLoyalty(this->getLife());
         std::cout << "Its loyalty is " << warrior->getLoyalty() << std::endl;
     }
-    // 将 Headquarter 的弱指针指向 warrior
-    // warrior->setHomeWeakPtr(std::make_shared<Headquarter>(*this));
-
     warrior->setCity(shared_from_this());
+    m_warriors.emplace_back(warrior);
     // 将 warrior 插入到 Headquarter 的作为城市的容器中
     this->addWarrior(warrior, warrior->getHeadColor());
     // 将 warrior 插入到 Headquarter 的容器中
-    m_warriors.emplace_back(warrior);
+    // TODO 怎么在战士死亡后删除呢？
+
     return true;
 }
 
@@ -112,11 +109,13 @@ void Headquarter::lionEscape()
     int hour = this->clock->getHours();
     int minute = this->clock->getMinutes();
     // 遍历容器中的lion
+
     for (auto i = m_warriors.begin(); i != m_warriors.end();) {
         auto warrior = *i;
         if (warrior->getType() == WarriorType::lion) {
             // 如果lion的忠诚度小于等于0，则lion逃跑
             if (warrior->getLoyalty() <= 0) {
+                // std::cout << "the loyalty of " << warrior->getTypeName() << " " << warrior->getNumber() << " is 0" << std::endl;
                 // e.g. 000:05 blue lion 1 ran away
                 std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' '
                           << this->getColorName() << " " << warrior->getTypeName() << " " << warrior->getNumber()
@@ -127,13 +126,15 @@ void Headquarter::lionEscape()
                 // 析构函数会自动把lion在city和headquarter中的指针置空
                 lion->escape();
                 // 判断lion是否在city中，如果在，则从city中移除lion
-                warrior->getCurrentCity()->removeWarrior(warrior);
+                warrior->getCurrentCity()->removeWarrior(warrior->getHeadColor());
                 lion.reset();
                 // 删除在headquarter中的lion的指针
                 i = m_warriors.erase(i);
             } else {
                 ++i;
             }
+        } else {
+            ++i;
         }
     }
 }
@@ -141,7 +142,14 @@ void Headquarter::lionEscape()
 void Headquarter::warriorsMarch()
 {
     if (!m_warriors.empty()) {
+        /* for (auto& warrior : m_warriors) {
+     std::cout << "this warrior"
+                       << warrior->getHeadColorName()
+                       << warrior->getNumber() << warrior->getTypeName()
+                       << std::endl;
+         }*/
         for (auto& warrior : m_warriors) {
+
             warrior->march(this->clock->getHours(), this->clock->getMinutes());
         }
     }
@@ -183,14 +191,6 @@ void Headquarter::warriorYell()
     }
 }
 
-void Headquarter::reportWeapon()
-{
-    int hour = this->clock->getHours();
-    int minute = this->clock->getMinutes();
-    for (auto& warrior : m_warriors) {
-        warrior->reportWeapon(hour, minute);
-    }
-}
 
 bool Headquarter::isAbleToCreate(int warrior_index)
 {

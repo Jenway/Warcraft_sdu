@@ -44,7 +44,6 @@ public:
     void reportBattle(); // 报告战斗情况
     void warriorYell(); // 武士欢呼
     void reportLife(); // 司令部报告生命值
-    void reportWeapon(); // 武士报告武器情况
     bool isStopped() const { return !this->m_isAbleToCreate; } // 是否停止制造武士
     bool isOccupied() const { return this->isOccupiedByEnemy; } // 是否被敌人占领
 

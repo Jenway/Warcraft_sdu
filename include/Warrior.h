@@ -21,12 +21,13 @@ class Headquarter;
 #include "../include/AbstractCity.h"
 
 // 定义战士类
-class Warrior {
+class Warrior : public std::enable_shared_from_this<Warrior> {
 protected:
-    static WarriorType m_type;
+    // 公用静态成员
     static int s_defaultLife[static_cast<int>(WarriorType::Count)]; // 默认生命值
     static int s_defaultAttack[static_cast<int>(WarriorType::Count)]; // 默认攻击力
-
+    // 成员变量
+    WarriorType m_type;
     int m_HP = 0;
     int m_number = 0;
     int m_attack = 0;
@@ -79,7 +80,7 @@ public:
     void attack(std::shared_ptr<Warrior> enemy);
 
     // add weapon
-    void addWeapon(WeaponType type, int attack, int number);
+    void addWeapon(WeaponType type);
     // TODO 击败敌人后获得武器 智能指针
     // void addWeapon(Weapon* weapon) { weapons.emplace_back(weapon); }
     void addWeapon(std::unique_ptr<Weapon>& weapon) { weapons.emplace_back(std::move(weapon)); }
@@ -135,9 +136,8 @@ public:
     Dragon(int number, head_color color)
         : Warrior(WarriorType::dragon, number, color)
     {
-        addWeapon(static_cast<WeaponType>(this->m_number % 3), 0, 0);
+        addWeapon(static_cast<WeaponType>(this->m_number % 3));
     }
-    virtual ~Dragon() = default;
 };
 
 class Ninja : public Warrior {
@@ -148,10 +148,9 @@ public:
     Ninja(int number, head_color color)
         : Warrior(WarriorType::ninja, number, color)
     {
-        addWeapon(static_cast<WeaponType>(this->m_number % 3), 0, 0);
-        addWeapon(static_cast<WeaponType>(this->m_number % 3 + 1), 0, 0);
+        addWeapon(static_cast<WeaponType>(this->m_number % 3));
+        addWeapon(static_cast<WeaponType>((this->m_number + 1) % 3));
     }
-    virtual ~Ninja() = default;
 };
 
 class Iceman : public Warrior {
@@ -161,9 +160,8 @@ public:
     Iceman(int number, head_color color)
         : Warrior(WarriorType::iceman, number, color)
     {
-        addWeapon(static_cast<WeaponType>(this->m_number % 3), 0, 0);
+        addWeapon(static_cast<WeaponType>(this->m_number % 3));
     }
-    virtual ~Iceman() = default;
 };
 
 class Lion : public Warrior {
@@ -191,8 +189,8 @@ public:
     Lion(int number, head_color color)
         : Warrior(WarriorType::lion, number, color)
     {
+        addWeapon(static_cast<WeaponType>(this->m_number % 3));
     }
-    virtual ~Lion() = default;
 };
 
 class Wolf : public Warrior {
@@ -209,7 +207,6 @@ public:
     {
         Wolf(warrior->getNumber(), warrior->getHeadColor());
     }
-    virtual ~Wolf() = default;
 };
 
 #endif // WARRIOR_H

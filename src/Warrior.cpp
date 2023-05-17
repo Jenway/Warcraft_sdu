@@ -1,6 +1,5 @@
 // src\Warrior.cpp 战士类的实现
 #include "../include/Warrior.h"
-#include "../include/City.h"
 #include "../include/Enums.h"
 #include "../include/Headquarter.h"
 #include "../include/Weapon.h"
@@ -13,7 +12,6 @@
 #include <vector>
 
 // 初始化战士的默认生命值 全部为0 ，防止调用时出错
-WarriorType Warrior::m_type = WarriorType::dragon;
 int Warrior::s_defaultLife[static_cast<int>(WarriorType::Count)] = { 0 };
 int Warrior::s_defaultAttack[static_cast<int>(WarriorType::Count)] = { 0 };
 int Lion::K_loyalty = 0;
@@ -85,21 +83,24 @@ void Warrior::march(int hour, int minute)
     // 如果当前城市是敌人的司令部,则战士到达敌人司令部,游戏结束
     if (currentCity->isHeadquarter()) {
         auto current = std::dynamic_pointer_cast<Headquarter>(currentCity);
-        auto temp = current->getColor();
         if (current->getColor() != this->getHeadColor()) {
-
             current->occupy();
             return;
         }
     }
+
     std::shared_ptr<AbstractCity> nextCity = currentCity->nextCity(m_headColor);
+    // std::cout << "the current city is " << currentCity->getCityNumber() << std::endl;
+    // std::cout << "the next city is " << nextCity->getCityNumber() << std::endl;
     // 从当前城市离开
-    if (!currentCity->isHeadquarter()) {
+    nextCity->addWarrior(shared_from_this(), this->getHeadColor());
 
-        currentCity->removeWarrior(std::shared_ptr<Warrior>(this));
-    }
-
-    nextCity->addWarrior(std::shared_ptr<Warrior>(this), this->getHeadColor());
+    currentCity->removeWarrior(this->getHeadColor());
+    // std::cout << this->currentCity->getCityNumber()<<std::endl;
+    // 我大概知道问题出现在哪里了，，removewarrior() 将这个武士类删除掉了，但是为什么，武士在 headquarter 的那次不会呢？
+    // 至少在这次函数被调用之前，Headquarter 中都应该有这个武士类的。
+    // 是shared指针的调用方式有问题，使用了 shared_from_this() 之后，就不会出现这个问题了
+    setCity(nextCity);
 
     // 派生类特性的实现
     switch (this->getType()) {
@@ -124,7 +125,6 @@ void Warrior::march(int hour, int minute)
         break;
     }
     // 000:10 red iceman 1 marched to city 1 with 20 elements and force 30
-
     std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
     std::cout << this->getHeadColorName() << ' ' << this->getTypeName() << ' ' << this->getNumber() << " marched to city " << currentCity->getCityNumber() + 1 << " with " << this->getHP() << " elements and force " << this->getAttack() << std::endl;
 }
@@ -138,10 +138,9 @@ void Warrior::setHPviaAttack(int attack)
     }
 }
 
-void Warrior::addWeapon(WeaponType type, int attack, int number)
+void Warrior::addWeapon(WeaponType type)
 {
-    auto weapon = WeaponFactory::createWeapon(type, attack);
-    weapon->setNumber(number);
+    auto weapon = WeaponFactory::createWeapon(type);
     weapons.emplace_back(std::move(weapon));
 }
 
@@ -149,6 +148,7 @@ void Warrior::reportWeapon(int hour, int minute) const // 输出武器信息
 {
     // e.g.
     // 000:55 blue lion 1 has 0 sword 1 bomb 0 arrow and 10 elements
+    std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
     std::cout << this->getHeadColorName() << " " << this->getTypeName() << " " << this->getNumber() << " has ";
     int sword = 0, bomb = 0, arrow = 0;
     for (auto& weapon : weapons) {
@@ -173,7 +173,7 @@ Warrior::Warrior()
 {
     // 示例输出 000 red iceman 1 born with strength 5,1 iceman in red headquarter
     this->m_type = WarriorType::dragon;
-    this->m_number = 1;
+    this->m_number = 999;
     this->m_HP = 5;
     this->m_attack = 5;
     this->m_headColor = head_color::red;
@@ -215,7 +215,6 @@ void Wolf::robWeapon()
         // Wolf 手里武器也不能超过 10 件 如果敌人 arrow 太多没法都抢来,那就先抢没用过的
         enemyWeakPtr->sortWeapon();
         for (auto& weapon : enemyWeakPtr->getWeapons()) {
-            int temp = weapon->getNumber();
             auto weaponType = weapon->getType();
         }
     }
