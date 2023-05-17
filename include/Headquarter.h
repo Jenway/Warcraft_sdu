@@ -61,7 +61,13 @@ public:
     void setLifeViaCost(int cost) { this->m_life -= cost; }
     void setClock(std::shared_ptr<GameClock> clock) { this->clock = clock; }
     void logWarriorInfo(std::unique_ptr<Warrior>& warrior);
-
+    // setter
+    void setWarriorArrived()
+    {
+        for (auto& warrior : this->m_warriors) {
+            warrior->setJustArrived(false);
+        }
+    }
     bool createWarrior(); // 创建战士
     // 这个函数仅会删除 Headquarter 中的 warrior 指针
     void removeWarriorptrInHead(std::shared_ptr<Warrior> warrior); // 移除战士

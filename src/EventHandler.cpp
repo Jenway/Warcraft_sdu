@@ -53,6 +53,7 @@ void EventHandler::onClockUpdate()
 
         break;
     case 40: // 每小时第 40 分,报告战斗情况 && 武士欢呼
+
         battle();
 
         reportBattle();
@@ -85,10 +86,25 @@ void EventHandler::lionEscape()
 
 void EventHandler::warriorsMarch()
 {
+    int hour = clock->getHours();
+    int minute = clock->getMinutes();
 
-    this->redHQ->warriorsMarch();
+    this->redHQ->setWarriorArrived();
+    this->blueHQ->setWarriorArrived();
 
-    this->blueHQ->warriorsMarch();
+    this->redHQ->warriorMarch();
+
+    for (auto city : cities) {
+        city->warriorMarch();
+    }
+    this->blueHQ->warriorMarch();
+
+    // 从西到东遍历城市，报告 march
+    this->redHQ->reportWarriorMarch(hour, minute);
+    for (auto city : cities) {
+        city->reportWarriorMarch(hour, minute);
+    }
+    this->blueHQ->reportWarriorMarch(hour, minute);
 }
 
 void EventHandler::wolfSnatch()

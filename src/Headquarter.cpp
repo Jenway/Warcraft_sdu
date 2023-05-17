@@ -84,6 +84,7 @@ bool Headquarter::createWarrior()
         std::cout << "Its loyalty is " << warrior->getLoyalty() << std::endl;
     }
     warrior->setCity(shared_from_this());
+    
     m_warriors.emplace_back(warrior);
     // 将 warrior 插入到 Headquarter 的作为城市的容器中
     this->addWarrior(warrior, warrior->getHeadColor());
@@ -126,7 +127,6 @@ void Headquarter::lionEscape()
                 // 析构函数会自动把lion在city和headquarter中的指针置空
                 lion->escape();
                 // 判断lion是否在city中，如果在，则从city中移除lion
-                warrior->getCurrentCity()->removeWarrior(warrior->getHeadColor());
                 lion.reset();
                 // 删除在headquarter中的lion的指针
                 i = m_warriors.erase(i);
@@ -139,29 +139,13 @@ void Headquarter::lionEscape()
     }
 }
 
-void Headquarter::warriorsMarch()
-{
-    if (!m_warriors.empty()) {
-        /* for (auto& warrior : m_warriors) {
-     std::cout << "this warrior"
-                       << warrior->getHeadColorName()
-                       << warrior->getNumber() << warrior->getTypeName()
-                       << std::endl;
-         }*/
-        for (auto& warrior : m_warriors) {
-
-            warrior->march(this->clock->getHours(), this->clock->getMinutes());
-        }
-    }
-}
-
 void Headquarter::wolfSnatch()
 {
     for (auto& warrior : m_warriors) {
         if (warrior->getType() == WarriorType::wolf) {
             std::shared_ptr<Wolf> wolf = std::dynamic_pointer_cast<Wolf>(warrior);
             // TODO wolf snatch
-            wolf->robWeapon();
+            // wolf->robWeapon();
         }
     }
 }
@@ -190,7 +174,6 @@ void Headquarter::warriorYell()
         }
     }
 }
-
 
 bool Headquarter::isAbleToCreate(int warrior_index)
 {

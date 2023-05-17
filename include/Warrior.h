@@ -37,7 +37,8 @@ protected:
     std::shared_ptr<AbstractCity> currentCity;
     // std::weak_ptr<City> cityWeakPtr; // 添加 weak_ptr
     // std::weak_ptr<Headquarter> homeWeakPtr; // headquarter 的 weak_ptr
-
+    // 是否刚移动到城市
+    bool m_justArrived = false;
     std::shared_ptr<Warrior> enemyWeakPtr; // 添加 weak_ptr
     std::vector<std::shared_ptr<Weapon>> weapons;
 
@@ -49,7 +50,8 @@ public:
     head_color getHeadColor() const { return m_headColor; }
     std::string getHeadColorName() const { return (m_headColor == head_color::red) ? "red" : "blue"; }
     std::shared_ptr<AbstractCity> getCurrentCity() const { return currentCity; }
-    bool isAlive() const { return m_isAlive; }
+    bool isAlive() { return m_isAlive; }
+    bool isJustArrived() { return m_justArrived; }
     static int getLifeCost(int index) { return s_defaultLife[index]; }
 
     WarriorType getType() const { return m_type; }
@@ -68,7 +70,7 @@ public:
     void setHeadColor(head_color headColor) { m_headColor = headColor; }
     // 这个函数仅仅修改了 m_isAlive 的值
     void setDead() { m_isAlive = false; }
-
+    void setJustArrived(bool justArrived) { m_justArrived = justArrived; }
     // 与城市交互
     void setCity(std::shared_ptr<AbstractCity> city) { this->currentCity = city; }
     // void setWeakCityptr(std::weak_ptr<City> cityWeakPtr) { this->cityWeakPtr = cityWeakPtr; }
@@ -90,7 +92,7 @@ public:
     // 清理内存
     void die() { }
     // TODO 战士前进
-    void march(int hour, int minute);
+    void march();
 
     // indicate whether the warrior is dead
     bool isDead() const { return m_HP <= 0; }
@@ -129,7 +131,7 @@ public:
     bool getCheerStatus() const { return cheerStatus; }
     void yell()
     {
-        std::cout << "Yell" << std::endl;
+        // std::cout << "Yell" << std::endl;
         cheerStatus = false;
     }
 
@@ -180,11 +182,12 @@ public:
     // 忠诚度为 0 时逃跑
     static void setDefaultKloyalty(int K) { K_loyalty = K; }
     void decreaseLoyalty() { loyalty -= K_loyalty; }
-    // 这个函数仅仅会修改 m_isAlive 的值、掉落武器、和输出log
+    // 这个函数仅仅会修改 m_isAlive 的值、掉落武器、和输出log,并移除city中的指针
     void escape()
     {
         this->dropWeapon();
         this->setDead();
+        this->currentCity->removeWarrior(this->getHeadColor(), shared_from_this());
     }
     Lion(int number, head_color color)
         : Warrior(WarriorType::lion, number, color)

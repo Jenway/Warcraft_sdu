@@ -75,7 +75,7 @@ void Warrior::sortWeapon()
     });
 }
 
-void Warrior::march(int hour, int minute)
+void Warrior::march()
 {
 
     auto currentCity = this->getCurrentCity();
@@ -95,7 +95,7 @@ void Warrior::march(int hour, int minute)
     // 从当前城市离开
     nextCity->addWarrior(shared_from_this(), this->getHeadColor());
 
-    currentCity->removeWarrior(this->getHeadColor());
+    currentCity->removeWarrior(this->getHeadColor(), shared_from_this());
     // std::cout << this->currentCity->getCityNumber()<<std::endl;
     // 我大概知道问题出现在哪里了，，removewarrior() 将这个武士类删除掉了，但是为什么，武士在 headquarter 的那次不会呢？
     // 至少在这次函数被调用之前，Headquarter 中都应该有这个武士类的。
@@ -124,9 +124,6 @@ void Warrior::march(int hour, int minute)
     default:
         break;
     }
-    // 000:10 red iceman 1 marched to city 1 with 20 elements and force 30
-    std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
-    std::cout << this->getHeadColorName() << ' ' << this->getTypeName() << ' ' << this->getNumber() << " marched to city " << currentCity->getCityNumber() + 1 << " with " << this->getHP() << " elements and force " << this->getAttack() << std::endl;
 }
 
 void Warrior::setHPviaAttack(int attack)

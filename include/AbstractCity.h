@@ -15,8 +15,8 @@ protected:
     // 在这个城市掉落的武器
     std::vector<std::shared_ptr<Weapon>> weapons;
     // 在这个城市的武士
-    std::shared_ptr<Warrior> m_warriors_blue;
-    std::shared_ptr<Warrior> m_warriors_red;
+    std::vector<std::shared_ptr<Warrior>> m_warriors_blue;
+    std::vector<std::shared_ptr<Warrior>> m_warriors_red;
     // 状态，是否有红蓝武士
     bool m_redWarriorExists = false;
     bool m_blueWarriorExists = false;
@@ -47,6 +47,8 @@ public:
 
     // 武士相关
     void reportWeapon(int hour, int minute);
+    void warriorMarch();
+    void reportWarriorMarch(int hour, int minute);
     // 输入敌人颜色，返回对应的武士
     std::shared_ptr<Warrior> getEnemy(head_color color);
 
@@ -54,7 +56,7 @@ public:
     void addWarrior(std::shared_ptr<Warrior> warrior, head_color color);
     // 是否存在对应颜色的武士
     bool hasWarrior(head_color color);
-    void removeWarrior(head_color color);
+    void removeWarrior(head_color color, std::shared_ptr<Warrior> warrior);
     virtual ~AbstractCity() = default;
 };
 #endif // ABSTRACT_CITY_H
