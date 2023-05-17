@@ -84,7 +84,8 @@ bool Headquarter::createWarrior()
         std::cout << "Its loyalty is " << warrior->getLoyalty() << std::endl;
     }
     warrior->setCity(shared_from_this());
-    
+    warrior->setHomePtr(std::dynamic_pointer_cast<Headquarter>(shared_from_this()));
+    // 将 warrior 插入到 Headquarter 的容器中
     m_warriors.emplace_back(warrior);
     // 将 warrior 插入到 Headquarter 的作为城市的容器中
     this->addWarrior(warrior, warrior->getHeadColor());
@@ -139,17 +140,6 @@ void Headquarter::lionEscape()
     }
 }
 
-void Headquarter::wolfSnatch()
-{
-    for (auto& warrior : m_warriors) {
-        if (warrior->getType() == WarriorType::wolf) {
-            std::shared_ptr<Wolf> wolf = std::dynamic_pointer_cast<Wolf>(warrior);
-            // TODO wolf snatch
-            // wolf->robWeapon();
-        }
-    }
-}
-
 void Headquarter::reportLife()
 {
     // TODO 每小时第 50 分,司令部报告生命值
@@ -159,20 +149,6 @@ void Headquarter::reportLife()
     int minute = this->clock->getMinutes();
     // 001:50 20 elements in red headquarter
     std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ' << this->getLife() << " elements in " << this->getColorName() << " headquarter" << std::endl;
-}
-void Headquarter::reportBattle()
-{
-    // TODO
-}
-
-void Headquarter::warriorYell()
-{
-    for (auto& warrior : m_warriors) {
-        if (warrior->getType() == WarriorType::dragon) {
-            std::shared_ptr<Dragon> dragon = std::dynamic_pointer_cast<Dragon>(warrior);
-            dragon->yell();
-        }
-    }
 }
 
 bool Headquarter::isAbleToCreate(int warrior_index)

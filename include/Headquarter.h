@@ -40,9 +40,6 @@ public:
     void logEvent(int hours); // 事件记录
     void lionEscape(); // lion 逃跑
     void warriorsMarch(); // 武士前进
-    void wolfSnatch(); // wolf 抢武器
-    void reportBattle(); // 报告战斗情况
-    void warriorYell(); // 武士欢呼
     void reportLife(); // 司令部报告生命值
     bool isStopped() const { return !this->m_isAbleToCreate; } // 是否停止制造武士
     bool isOccupied() const { return this->isOccupiedByEnemy; } // 是否被敌人占领
@@ -60,7 +57,7 @@ public:
     int getWarriorSum() const { return this->m_totalWarriors; }
     void setLifeViaCost(int cost) { this->m_life -= cost; }
     void setClock(std::shared_ptr<GameClock> clock) { this->clock = clock; }
-    void logWarriorInfo(std::unique_ptr<Warrior>& warrior);
+    void deleteWarrior(std::shared_ptr<Warrior> warrior) { }
     // setter
     void setWarriorArrived()
     {

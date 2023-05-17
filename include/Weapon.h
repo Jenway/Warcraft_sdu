@@ -22,6 +22,14 @@ public:
     int getAttack() const { return m_attack; }
     // int getNumber() const { return m_number; }
     int getDurability() const { return durability; }
+    bool getUsed()
+    {
+        if (m_type == WeaponType::arrow && durability < 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     bool getCanBeDestroyed() const { return can_be_destroyed; }
     bool isDestroyed() const { return durability == 0 && can_be_destroyed; }
 
@@ -40,15 +48,12 @@ public:
     // use weapon
     bool useWeapon()
     {
+
+        decreaseDurability();
         if (isDestroyed()) {
-            return false;
-        } else {
-            decreaseDurability();
-            if (isDestroyed()) {
-                setDestroyed(true);
-            }
-            return true;
+            setDestroyed(true);
         }
+        return true;
     }
     // constructor && destructor
 

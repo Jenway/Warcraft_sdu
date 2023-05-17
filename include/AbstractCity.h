@@ -25,6 +25,8 @@ protected:
     std::shared_ptr<AbstractCity> m_rightCity;
     // 判断是否是 headquater
     bool isThisHeadquater = false;
+    // 战斗了吗
+    bool isJustBattled = false;
 
 public:
     // set neighbor
@@ -44,11 +46,13 @@ public:
     // battle 相关
     void battle();
     void attackOnBattle(std::shared_ptr<Warrior> red, std::shared_ptr<Warrior> blue);
-
+    void afterBattle();
     // 武士相关
     void reportWeapon(int hour, int minute);
     void warriorMarch();
     void reportWarriorMarch(int hour, int minute);
+    void reportBattle(int hour, int minute); // 报告战斗情况
+    void wolfSnatch();
     // 输入敌人颜色，返回对应的武士
     std::shared_ptr<Warrior> getEnemy(head_color color);
 

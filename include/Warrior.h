@@ -36,10 +36,9 @@ protected:
     //  战士所在城市
     std::shared_ptr<AbstractCity> currentCity;
     // std::weak_ptr<City> cityWeakPtr; // 添加 weak_ptr
-    // std::weak_ptr<Headquarter> homeWeakPtr; // headquarter 的 weak_ptr
+    std::shared_ptr<Headquarter> homeWeakPtr; // headquarter 的 weak_ptr
     // 是否刚移动到城市
     bool m_justArrived = false;
-    std::shared_ptr<Warrior> enemyWeakPtr; // 添加 weak_ptr
     std::vector<std::shared_ptr<Weapon>> weapons;
 
 public:
@@ -51,6 +50,8 @@ public:
     std::string getHeadColorName() const { return (m_headColor == head_color::red) ? "red" : "blue"; }
     std::shared_ptr<AbstractCity> getCurrentCity() const { return currentCity; }
     bool isAlive() { return m_isAlive; }
+    // indicate whether the warrior is dead
+    bool isDead() const { return m_HP <= 0; }
     bool isJustArrived() { return m_justArrived; }
     static int getLifeCost(int index) { return s_defaultLife[index]; }
 
@@ -58,6 +59,10 @@ public:
     std::string getTypeName() const { return warrior_type_name[static_cast<int>(m_type)]; }
     // 返回全部武器
     std::vector<std::shared_ptr<Weapon>>& getWeapons() { return weapons; }
+    void removeWeapon(int i)
+    {
+        weapons.erase(weapons.begin() + i);
+    }
     // 事件接口
     void reportWeapon(int hour, int minute) const;
     void beingRobbed();
@@ -74,7 +79,7 @@ public:
     // 与城市交互
     void setCity(std::shared_ptr<AbstractCity> city) { this->currentCity = city; }
     // void setWeakCityptr(std::weak_ptr<City> cityWeakPtr) { this->cityWeakPtr = cityWeakPtr; }
-    // void setHomeWeakPtr(std::weak_ptr<Headquarter> homeWeakPtr) { this->homeWeakPtr = homeWeakPtr; }
+    void setHomePtr(std::shared_ptr<Headquarter> homeWeakPtr) { this->homeWeakPtr = homeWeakPtr; }
     bool operator==(const Warrior& other) const { return this->m_number == other.m_number; }
     // TODO 武器排序
     void sortWeapon();
@@ -84,18 +89,23 @@ public:
     // add weapon
     void addWeapon(WeaponType type);
     // TODO 击败敌人后获得武器 智能指针
-    // void addWeapon(Weapon* weapon) { weapons.emplace_back(weapon); }
+    void pickWeapons(std::vector<std::shared_ptr<Weapon>>) { }
     void addWeapon(std::unique_ptr<Weapon>& weapon) { weapons.emplace_back(std::move(weapon)); }
     // TODO 战士死亡后掉落武器
-    void getWeapon(std::vector<std::shared_ptr<Weapon>>& weaponVec) { }
-    void dropWeapon() { weapons.clear(); }
+    std::vector<std::shared_ptr<Weapon>> dropWeapons()
+    {
+        std::vector<std::shared_ptr<Weapon>> weaponVec;
+        for (auto& weapon : weapons) {
+            weaponVec.emplace_back(weapon);
+        }
+        weapons.clear();
+        return weaponVec;
+    }
     // 清理内存
-    void die() { }
+    void die()
+    {}
     // TODO 战士前进
     void march();
-
-    // indicate whether the warrior is dead
-    bool isDead() const { return m_HP <= 0; }
 
     // for deived class to override
 
@@ -118,22 +128,12 @@ public:
 class Dragon : public Warrior {
 private:
     double morale = 0.0;
-    bool cheerStatus = false;
 
 public:
     // getter
     double getMorale() const override { return morale; }
     // setter
     void setMorale(double morale) override { this->morale = morale; }
-
-    // TODO 特有方法
-    void setCheerStatus() { cheerStatus = true; }
-    bool getCheerStatus() const { return cheerStatus; }
-    void yell()
-    {
-        // std::cout << "Yell" << std::endl;
-        cheerStatus = false;
-    }
 
     Dragon(int number, head_color color)
         : Warrior(WarriorType::dragon, number, color)
@@ -185,7 +185,8 @@ public:
     // 这个函数仅仅会修改 m_isAlive 的值、掉落武器、和输出log,并移除city中的指针
     void escape()
     {
-        this->dropWeapon();
+        // todo 待修改
+        this->dropWeapons();
         this->setDead();
         this->currentCity->removeWarrior(this->getHeadColor(), shared_from_this());
     }
@@ -200,7 +201,7 @@ class Wolf : public Warrior {
 public:
     // TODO 特有方法
     // 抢夺敌人武器
-    void robWeapon();
+    void snatchWeapons(std::shared_ptr<Warrior> enemy);
     Wolf(int number, head_color color)
         : Warrior(WarriorType::wolf, number, color)
     {
