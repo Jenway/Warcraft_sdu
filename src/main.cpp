@@ -49,19 +49,19 @@ void part3_test(std::string input_file_path)
         EventHandler eventHandler(red_ptr, blue_ptr);
 
         // N => 两个司令部之间一共有N个城市( 1 <= N <= 20 )
-        std::shared_ptr<City> city = std::make_unique<City>(0);
+        std::shared_ptr<City> city = std::make_unique<City>(1);
         red_ptr->setRightCity(city);
         city->setLeftCity(red_ptr);
         std::vector<std::shared_ptr<City>> cities;
         cities.emplace_back(city);
 
-        for (int i = 1; i < N - 1; i++) {
+        for (int i = 2; i < N; i++) {
             std::shared_ptr<City> cityPtr = std::make_unique<City>(i);
             cities.back()->setRightCity(cityPtr);
             cityPtr->setLeftCity(cities.back());
             cities.emplace_back(cityPtr);
         }
-        city = std::make_unique<City>(N - 1);
+        city = std::make_unique<City>(N);
         cities.back()->setRightCity(city);
         city->setLeftCity(cities.back());
         city->setRightCity(blue_ptr);

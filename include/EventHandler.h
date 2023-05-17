@@ -18,11 +18,12 @@ private:
     void lionEscape();
     void warriorsMarch();
     void wolfSnatch();
-    void reportBattle();
-    void warriorYell();
+
     void reportLife();
     void reportWeapon();
     void battle();
+    void reportBattle();
+    void afterBattle();
 
 public:
     void setClock(std::shared_ptr<GameClock> clock);
