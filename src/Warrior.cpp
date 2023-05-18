@@ -23,9 +23,10 @@ void Warrior::attack(std::shared_ptr<Warrior> enemy)
         return;
     }
     // weapon order
-    // get weapon
-    // TODO 在攻击时，武器会变化
-    auto weapon = weapons[0].get();
+
+    auto weapon = weapons[this->m_currentWeaponIndex].get();
+    // now the warrior color type and number and weapon and durability is as blelos
+    // std::cout << this->getHeadColorName() << " " << this->getTypeName() << " " << this->getNumber() << " attacked " << enemy->getHeadColorName() << " " << enemy->getTypeName() << " " << enemy->getNumber() << " with " << weapon->getWeaponName() << "(" << weapon->getDurability() << ")" << std::endl;
     while (weapon->isDestroyed()) {
         weapons.erase(weapons.begin());
         weapon = weapons[0].get();
@@ -51,7 +52,12 @@ void Warrior::attack(std::shared_ptr<Warrior> enemy)
     //           << enemy->getHeadColorName() << enemy->getTypeName() << enemy->getNumber() << " with " << weapon->getWeaponName() << "(" << weapon->getDurability() << ")" << std::endl;
     // std::cout << "the enemy now has " << enemy->getHP() << " elements" << std::endl;
     if (weapon->isDestroyed()) {
-        weapons.erase(weapons.begin());
+        weapons.erase(weapons.begin() + this->m_currentWeaponIndex);
+    }
+    if (weapons.empty()) {
+        this->m_currentWeaponIndex = 0;
+    } else {
+        this->m_currentWeaponIndex = (this->m_currentWeaponIndex + 1) % weapons.size();
     }
 
     // check if enemy is dead
@@ -72,17 +78,6 @@ void Warrior::sortWeapon()
     }
     // 武器顺序: sword bomb arrow
     // arrow 用过的排在前面
-    // std::sort(weapons.begin(), weapons.end(), [](const std::shared_ptr<Weapon>& a, const std::shared_ptr<Weapon>& b) {
-    //     if (a->getType() == WeaponType::arrow && b->getType() == WeaponType::arrow) {
-    //         return a->getDurability() < b->getDurability();
-    //     } else if (a->getType() == WeaponType::arrow) {
-    //         return true;
-    //     } else if (b->getType() == WeaponType::arrow) {
-    //         return false;
-    //     } else {
-    //         return a->getType() < b->getType();
-    //     }
-    // });
 
     std::sort(weapons.begin(), weapons.end(), [](const std::shared_ptr<Weapon>& a, const std::shared_ptr<Weapon>& b) {
         if (a->getType() == WeaponType::arrow && b->getType() == WeaponType::arrow) {
@@ -91,6 +86,11 @@ void Warrior::sortWeapon()
             return a->getType() < b->getType();
         }
     });
+    // std::cout << "the weapon order now is ";
+    // for (auto& weapon : weapons) {
+    //     std::cout << weapon->getWeaponName() << "(" << weapon->getDurability() << ") ";
+    // }
+    // std::cout << std::endl;
 }
 
 void Warrior::march()
@@ -157,6 +157,38 @@ void Warrior::addWeapon(WeaponType type)
     weapons.emplace_back(std::move(weapon));
 }
 
+void Warrior::pickWeapons(std::shared_ptr<Warrior> enemy)
+{
+
+    auto enemy_weapons = enemy->getWeapons();
+    // 如果敌人没有武器,则不抢夺
+    if (enemy_weapons.empty()) {
+        return;
+    }
+    // 排序 武器顺序: sword bomb arrow 其中 arrow 没用过的排在前面
+    std::sort(enemy_weapons.begin(), enemy_weapons.end(), [](const std::shared_ptr<Weapon>& a, const std::shared_ptr<Weapon>& b) {
+        if (a->getType() == WeaponType::arrow && b->getType() == WeaponType::arrow) {
+            return a->getDurability() > b->getDurability();
+        } else {
+            return a->getType() < b->getType();
+        }
+    });
+    // 武器不能超过 10 个,同一种武器可以拿多个
+    WeaponType weaponType = enemy_weapons[0]->getType();
+    std::string weaponTypeName = weapon_type_name[static_cast<int>(weaponType)];
+
+    for (auto i = 0; i < enemy->getWeapons().size(); i++) {
+        auto weapon = enemy->getWeapons()[i];
+        if (weapon->getType() == weaponType) {
+            if (this->weapons.size() >= 10) {
+                break;
+            }
+            this->weapons.emplace_back(std::move(weapon));
+            enemy->eraseWeapon(i);
+        }
+    }
+}
+
 void Warrior::reportWeapon(int hour, int minute) const // 输出武器信息
 {
     // e.g.
@@ -221,25 +253,36 @@ void Wolf::snatchWeapons(std::shared_ptr<Warrior> enemy, int hour, int minute)
         // TODO 抢夺敌人的武器
         // 会抢到敌人编号最小的那种武器 如果敌人有多件这样的武器,则全部抢来
         // Wolf 手里武器也不能超过 10 件 如果敌人 arrow 太多没法都抢来,那就先抢没用过的
-        enemy->sortWeapon();
+        auto enemy_weapons = enemy->getWeapons();
+        // 如果敌人没有武器,则不抢夺
+        if (enemy_weapons.empty()) {
+            return;
+        }
+        // 排序 武器顺序: sword bomb arrow 其中 arrow 没用过的排在前面
+        std::sort(enemy_weapons.begin(), enemy_weapons.end(), [](const std::shared_ptr<Weapon>& a, const std::shared_ptr<Weapon>& b) {
+            if (a->getType() == WeaponType::arrow && b->getType() == WeaponType::arrow) {
+                return a->getDurability() > b->getDurability();
+            } else {
+                return a->getType() < b->getType();
+            }
+        });
+        // 武器不能超过 10 个,同一种武器可以拿多个
+        WeaponType weaponType = enemy_weapons[0]->getType();
+        std::string weaponTypeName = weapon_type_name[static_cast<int>(weaponType)];
+        int tookWeaponNum = 0;
         for (auto i = 0; i < enemy->getWeapons().size(); i++) {
             auto weapon = enemy->getWeapons()[i];
-            auto weaponType = weapon->getType();
-            if (this->weapons.size() >= 10) {
-                break;
-            } else {
-                std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
-                std::cout << this->getHeadColorName() << " wolf " << this->getNumber() << " took " << weapon->getWeaponName() << " from " << enemy->getHeadColorName() << " " << enemy->getTypeName() << " " << enemy->getNumber() << " in city " << this->currentCity->getCityNumber() << std::endl;
-                if (weaponType == WeaponType::arrow) {
-                    if (weapon->getUsed() == false) {
-                        this->weapons.emplace_back(std::move(weapon));
-                        enemy->removeWeapon(i);
-                    }
-                } else {
-                    this->weapons.emplace_back(std::move(weapon));
-                    enemy->removeWeapon(i);
+            if (weapon->getType() == weaponType) {
+                if (this->weapons.size() >= 10) {
+                    break;
                 }
+                this->weapons.emplace_back(std::move(weapon));
+                enemy->eraseWeapon(i);
+                tookWeaponNum++;
             }
         }
+
+        std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
+        std::cout << this->getHeadColorName() << " wolf " << this->getNumber() << " took " << tookWeaponNum << " " << weaponTypeName << " from " << enemy->getHeadColorName() << " " << enemy->getTypeName() << " " << enemy->getNumber() << " in city " << this->currentCity->getCityNumber() << std::endl;
     }
 }

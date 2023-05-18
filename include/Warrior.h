@@ -40,6 +40,8 @@ protected:
     // 是否刚移动到城市
     bool m_justArrived = false;
     std::vector<std::shared_ptr<Weapon>> weapons;
+    // 战斗切换武器用来记录当前武器的下标
+    int m_currentWeaponIndex = 0;
 
 public:
     // getter
@@ -59,6 +61,8 @@ public:
     std::string getTypeName() const { return warrior_type_name[static_cast<int>(m_type)]; }
     // 返回全部武器
     std::vector<std::shared_ptr<Weapon>>& getWeapons() { return weapons; }
+    // 移除武器
+    void eraseWeapon(int i) { weapons.erase(weapons.begin() + i); }
     void removeWeapon(int i)
     {
         weapons.erase(weapons.begin() + i);
@@ -89,7 +93,7 @@ public:
     // add weapon
     void addWeapon(WeaponType type);
     // TODO 击败敌人后获得武器 智能指针
-    void pickWeapons(std::vector<std::shared_ptr<Weapon>>) { }
+    void pickWeapons(std::shared_ptr<Warrior>);
     void addWeapon(std::unique_ptr<Weapon>& weapon) { weapons.emplace_back(std::move(weapon)); }
     // TODO 战士死亡后掉落武器
     std::vector<std::shared_ptr<Weapon>> dropWeapons()

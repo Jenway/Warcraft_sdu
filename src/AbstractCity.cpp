@@ -232,10 +232,10 @@ void AbstractCity::afterBattle()
         }
         // 一方死亡，另一方存活
         if (red->isAlive() && !blue->isAlive()) {
-            red->pickWeapons(this->weapons);
+            red->pickWeapons(blue);
         }
         if (blue->isAlive() && !red->isAlive()) {
-            blue->pickWeapons(this->weapons);
+            blue->pickWeapons(blue);
         }
         // 清理内存
         if (!red->isAlive()) {
