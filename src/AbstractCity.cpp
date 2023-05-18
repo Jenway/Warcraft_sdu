@@ -117,7 +117,6 @@ void AbstractCity::battle()
     if (m_redWarriorExists && m_blueWarriorExists) {
         // 塔塔开~
         bool onBattle = true;
-<<<<<<< HEAD
         auto red = m_warriors_red.back();
         auto blue = m_warriors_blue.back();
         red->sortWeapon();
@@ -132,18 +131,6 @@ void AbstractCity::battle()
             }
             // 2. 两者都没有武器
             if (red->getWeapons().empty() && blue->getWeapons().empty()) {
-=======
-        while (onBattle) {
-            this->attackOnBattle(this->m_warriors_red.back(), this->m_warriors_blue.back());
-
-            // 战斗结束判断
-            // 1. 有战士死亡
-            if (!m_warriors_red.back()->isAlive() || !m_warriors_blue.back()->isAlive()) {
-                onBattle = false;
-            }
-            // 2. 两者都没有武器
-            if (m_warriors_red.back()->getWeapons().empty() && m_warriors_blue.back()->getWeapons().empty()) {
->>>>>>> 1950ff26f8cabcaac146e8d79d25a2cadd074538
                 onBattle = false;
             }
         }
