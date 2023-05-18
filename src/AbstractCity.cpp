@@ -134,8 +134,6 @@ void AbstractCity::battle()
     }
 }
 
-// report life
-
 // report battle
 
 void AbstractCity::reportBattle(int hour, int minute)
@@ -212,7 +210,7 @@ void AbstractCity::afterBattle()
             this->m_warriors_blue.pop_back();
         }
         if (blue->isAlive() && !red->isAlive()) {
-            blue->pickWeapons(blue);
+            blue->pickWeapons(red);
             this->m_redWarriorExists = false;
             this->m_warriors_red.pop_back();
         }

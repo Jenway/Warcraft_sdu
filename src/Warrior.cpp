@@ -18,7 +18,10 @@ int Lion::K_loyalty = 0;
 
 void Warrior::attack(std::shared_ptr<Warrior> enemy)
 {
-
+    bool DEBUG = false;
+    if (this->getNumber() == 6 && enemy->getNumber() == 8) {
+        DEBUG = true;
+    }
     bool onAttack = true;
     while (onAttack) {
         // check if self is dead or self own weapon
@@ -44,20 +47,21 @@ void Warrior::attack(std::shared_ptr<Warrior> enemy)
         if (weapons.empty()) {
             this->m_currentWeaponIndex = 0;
             onAttack = false;
+        }
+        // 这个武器使用的实验要求说的不是很清楚
+        int temp = this->m_currentWeaponIndex + 1;
+        if (temp >= weapons.size()) {
+            this->m_currentWeaponIndex = 0;
+            onAttack = false;
         } else {
-            int temp = this->m_currentWeaponIndex + 1;
-            if (temp >= weapons.size()) {
-                this->m_currentWeaponIndex = 0;
+            this->m_currentWeaponIndex = temp;
+            if (weapons[this->m_currentWeaponIndex]->getType() == weaponType) {
                 onAttack = false;
             } else {
-                this->m_currentWeaponIndex = temp;
-                if (weapons[this->m_currentWeaponIndex]->getType() == weaponType) {
-                    onAttack = true;
-                } else {
-                    onAttack = false;
-                }
+                onAttack = false;
             }
         }
+
         // check if enemy is dead
         if (enemy->getHP() == 0) {
             enemy->setDead();
@@ -80,6 +84,7 @@ void Warrior::attack(std::shared_ptr<Warrior> enemy)
 void Warrior::sortWeapon()
 {
     this->m_currentWeaponIndex = 0;
+
     // 战斗开始前,根据武器编号从小到大排列使用顺序,用过的arrow排在未用过的前面,战斗中不会重新排列。
     if (weapons.size() <= 1) {
         return;
@@ -179,18 +184,15 @@ void Warrior::pickWeapons(std::shared_ptr<Warrior> enemy)
             return a->getType() < b->getType();
         }
     });
-    // 武器不能超过 10 个,同一种武器可以拿多个
+    // 武器不能超过 10 个，同一种武器可以拿多个
     WeaponType weaponType = enemy_weapons[0]->getType();
-    std::string weaponTypeName = weapon_type_name[static_cast<int>(weaponType)];
-
-    for (auto i = 0; i < enemy->getWeapons().size(); i++) {
-        auto weapon = enemy->getWeapons()[i];
+    for (auto i = 0; i < enemy_weapons.size(); i++) {
+        auto weapon = enemy_weapons[i];
         if (weapon->getType() == weaponType) {
             if (this->weapons.size() >= 10) {
                 break;
             }
             this->weapons.emplace_back(std::move(weapon));
-            enemy->eraseWeapon(i);
         }
     }
 }
@@ -255,20 +257,30 @@ void Wolf::snatchWeapons(std::shared_ptr<Warrior> enemy, int hour, int minute)
                 return a->getType() < b->getType();
             }
         });
-        // 武器不能超过 10 个,同一种武器可以拿多个
         WeaponType weaponType = enemy_weapons[0]->getType();
         std::string weaponTypeName = weapon_type_name[static_cast<int>(weaponType)];
         int tookWeaponNum = 0;
-        for (auto i = 0; i < enemy->getWeapons().size(); i++) {
+
+        // 标记需要删除的武器的索引
+        std::vector<int> indicesToRemove;
+
+        // 遍历敌人的武器并标记需要删除的武器
+        for (int i = 0; i < enemy->getWeapons().size(); i++) {
             auto weapon = enemy->getWeapons()[i];
             if (weapon->getType() == weaponType) {
                 if (this->weapons.size() >= 10) {
                     break;
                 }
                 this->weapons.emplace_back(std::move(weapon));
-                enemy->eraseWeapon(i);
                 tookWeaponNum++;
+                indicesToRemove.push_back(i);
             }
+        }
+
+        // 从后向前删除被拿走的武器
+        for (int i = indicesToRemove.size() - 1; i >= 0; i--) {
+            int indexToRemove = indicesToRemove[i];
+            enemy->eraseWeapon(indexToRemove);
         }
 
         std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
