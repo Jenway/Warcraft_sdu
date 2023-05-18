@@ -8,23 +8,20 @@
 
 class EventHandler {
 private:
+    std::shared_ptr<GameClock> clock;
     std::shared_ptr<Headquarter> redHQ;
     std::shared_ptr<Headquarter> blueHQ;
-
     std::vector<std::shared_ptr<City>> cities;
-    std::shared_ptr<GameClock> clock;
 
     void spawnWarrior();
     void lionEscape();
     void warriorsMarch();
     void wolfSnatch();
-
     void reportLife();
     void reportWeapon();
     void battle();
     void reportBattle();
     void afterBattle();
-    bool isHqOccupied();
 
 public:
     void setClock(std::shared_ptr<GameClock> clock);

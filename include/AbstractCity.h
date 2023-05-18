@@ -6,15 +6,12 @@
 #define ABSTRACT_CITY_H
 
 #include "Enums.h"
-#include "Weapon.h"
 #include <memory>
 #include <vector>
 
 class Warrior;
 class AbstractCity : public std::enable_shared_from_this<AbstractCity> {
 protected:
-    // 在这个城市掉落的武器
-    std::vector<std::shared_ptr<Weapon>> weapons;
     // 在这个城市的武士
     std::vector<std::shared_ptr<Warrior>> m_warriors_blue;
     std::vector<std::shared_ptr<Warrior>> m_warriors_red;
@@ -38,35 +35,39 @@ public:
     // 返回下一个城市的shared_ptr
     virtual std::shared_ptr<AbstractCity> nextCity(head_color warrior_color) { return nullptr; }
     virtual std::shared_ptr<AbstractCity> previousCity() { return nullptr; }
+    /*返回城市信息*/
     // 返回城市编号
     virtual int getCityNumber() { return 0; }
+    // 返回城市颜色
     virtual std::string getHeadColorName() { return ""; }
-    // 状态返回
-    bool isBattle() { return m_redWarriorExists && m_blueWarriorExists; }
+    // 返回是否是司令部
+    bool isHeadquarter() { return this->isThisHeadquater; }
 
-    // 武器掉落与捡起相关
-    void dropWeapon(std::shared_ptr<Weapon> weapon) { weapons.push_back(weapon); }
-    std::shared_ptr<Weapon> pickUpWeapon() { return nullptr; }
+    // 事件
+    void warriorMarch();
+    void warriorMarchForColor(std::vector<std::shared_ptr<Warrior>>& warriors);
+
+    // 报告
+    void reportWeapon(int hour, int minute);
+    void reportWarriorMarchForColor(std::vector<std::shared_ptr<Warrior>>& warriors, int& hour, int& minute);
+    void reportWarriorMarch(int hour, int minute);
+    void reportBattle(int hour, int minute); // 报告战斗情况
+
     // battle 相关
     void battle();
     void attackOnBattle(std::shared_ptr<Warrior> red, std::shared_ptr<Warrior> blue);
     void afterBattle();
     bool isOccupied() { return this->isOccupiedByEnemy; }
     void occupy() { this->isOccupiedByEnemy = true; }
-    // 武士相关
-    void reportWeapon(int hour, int minute);
-    void warriorMarch();
-    void reportWarriorMarch(int hour, int minute);
-    void reportBattle(int hour, int minute); // 报告战斗情况
-    void wolfSnatch(int hour, int minute);
-    // 输入敌人颜色，返回对应的武士
-    std::shared_ptr<Warrior> getEnemy(head_color color);
 
-    bool isHeadquarter() { return this->isThisHeadquater; }
+    // 事件武士派生类
+    void wolfSnatch(int hour, int minute);
+    void lionEscape(int hour, int minute);
+
+    // 增删武士
     void addWarrior(std::shared_ptr<Warrior> warrior, head_color color);
-    // 是否存在对应颜色的武士
-    bool hasWarrior(head_color color);
     void removeWarrior(head_color color, std::shared_ptr<Warrior> warrior);
+
     virtual ~AbstractCity() = default;
 };
 #endif // ABSTRACT_CITY_H

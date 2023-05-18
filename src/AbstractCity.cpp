@@ -21,85 +21,57 @@ void AbstractCity::addWarrior(std::shared_ptr<Warrior> warrior, head_color color
     }
 }
 
-bool AbstractCity::hasWarrior(head_color color)
-{
-    if (color == head_color::red) {
-        return m_redWarriorExists;
-    } else {
-        return m_blueWarriorExists;
-    }
-}
-
 // warrior march
 
 void AbstractCity::warriorMarch()
 {
-
     if (m_redWarriorExists) {
-        // std::shared_ptr<AbstractCity> nextCity = this->nextCity(head_color::red);
-        // 为什么这里不用 for (auto warrior : m_warriors_red) ?
-        // 因为循环中会删除m_warriors_red 中的元素，会导致迭代器失效
-        for (auto i = 0; i < m_warriors_red.size(); i++) {
-            auto warrior = m_warriors_red[i];
-            if (!warrior->isJustArrived()) {
-                warrior->setJustArrived(true);
-                warrior->march();
-            }
-        }
+        warriorMarchForColor(m_warriors_red);
     }
 
     if (m_blueWarriorExists) {
-        for (auto i = 0; i < m_warriors_blue.size(); i++) {
-            auto warrior = m_warriors_blue[i];
-            if (!warrior->isJustArrived()) {
-                warrior->setJustArrived(true);
-                warrior->march();
-            }
+        warriorMarchForColor(m_warriors_blue);
+    }
+}
+void AbstractCity::warriorMarchForColor(std::vector<std::shared_ptr<Warrior>>& warriors)
+{
+    // 为什么这里不用 for (auto warrior : m_warriors_red) ?
+    // 因为循环中会删除warriors 中的元素，会导致迭代器失效
+    for (auto i = 0; i < warriors.size(); i++) {
+        auto warrior = warriors[i];
+        if (!warrior->isJustArrived()) {
+            warrior->setJustArrived(true);
+            warrior->march();
         }
     }
 }
-
 // report warriors march
-
 void AbstractCity::reportWarriorMarch(int hour, int minute)
 {
     if (m_redWarriorExists) {
-        for (auto i = 0; i < m_warriors_red.size(); i++) {
-            auto warrior = m_warriors_red[i];
-            if (warrior->isJustArrived()) {
-                // 000:10 red iceman 1 marched to city 1 with 20 elements and force 30
-                std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
-                if (this->isHeadquarter()) {
-                    std::cout << warrior->getHeadColorName() << ' ' << warrior->getTypeName() << ' ' << warrior->getNumber() << " reached " << this->getHeadColorName() << " headquarter"
-                              << " with " << warrior->getHP() << " elements and force " << warrior->getAttack() << std::endl;
-
-                    if (this->isOccupied()) {
-                        std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
-                        std::cout << this->getHeadColorName() << " headquarter was taken" << std::endl;
-                    }
-                } else {
-                    std::cout << warrior->getHeadColorName() << ' ' << warrior->getTypeName() << ' ' << warrior->getNumber() << " marched to city " << this->getCityNumber() << " with " << warrior->getHP() << " elements and force " << warrior->getAttack() << std::endl;
-                }
-            }
-        }
+        reportWarriorMarchForColor(m_warriors_red, hour, minute);
     }
     if (m_blueWarriorExists) {
-        for (auto i = 0; i < m_warriors_blue.size(); i++) {
-            auto warrior = m_warriors_blue[i];
-            if (warrior->isJustArrived()) {
-                // 000:10 red iceman 1 marched to city 1 with 20 elements and force 30
-                std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
-                if (this->isHeadquarter()) {
-                    std::cout << warrior->getHeadColorName() << ' ' << warrior->getTypeName() << ' ' << warrior->getNumber() << " reached " << this->getHeadColorName() << " headquarter"
-                              << " with " << warrior->getHP() << " elements and force " << warrior->getAttack() << std::endl;
-                    
-                    if (this->isOccupied()) {
-                        std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
-                        std::cout << this->getHeadColorName() << " headquarter was taken" << std::endl;
-                    }
-                } else {
-                    std::cout << warrior->getHeadColorName() << ' ' << warrior->getTypeName() << ' ' << warrior->getNumber() << " marched to city " << this->getCityNumber() << " with " << warrior->getHP() << " elements and force " << warrior->getAttack() << std::endl;
+        reportWarriorMarchForColor(m_warriors_blue, hour, minute);
+    }
+}
+
+void AbstractCity::reportWarriorMarchForColor(std::vector<std::shared_ptr<Warrior>>& warriors, int& hour, int& minute)
+{
+    for (auto i = 0; i < warriors.size(); i++) {
+        auto warrior = warriors[i];
+        if (warrior->isJustArrived()) {
+            // 000:10 red iceman 1 marched to city 1 with 20 elements and force 30
+            std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
+            if (this->isHeadquarter()) {
+                std::cout << warrior->getHeadColorName() << ' ' << warrior->getTypeName() << ' ' << warrior->getNumber() << " reached " << this->getHeadColorName() << " headquarter"
+                          << " with " << warrior->getHP() << " elements and force " << warrior->getAttack() << std::endl;
+                if (this->isOccupied()) {
+                    std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
+                    std::cout << this->getHeadColorName() << " headquarter was taken" << std::endl;
                 }
+            } else {
+                std::cout << warrior->getHeadColorName() << ' ' << warrior->getTypeName() << ' ' << warrior->getNumber() << " marched to city " << this->getCityNumber() << " with " << warrior->getHP() << " elements and force " << warrior->getAttack() << std::endl;
             }
         }
     }
@@ -151,6 +123,10 @@ void AbstractCity::battle()
             }
             // 2. 两者都没有武器
             if (red->getWeapons().empty() && blue->getWeapons().empty()) {
+                onBattle = false;
+            }
+            // 3. 生命值和武器状态都没有变化
+            if (red->unchanged() && blue->unchanged()) {
                 onBattle = false;
             }
         }
@@ -222,7 +198,6 @@ void AbstractCity::afterBattle()
 
         // 战斗结束，重置标志位
         this->isJustBattled = false;
-        // TODO 判断是否有战士死亡 并设置死亡
         auto red = m_warriors_red.back();
         auto blue = m_warriors_blue.back();
         // 获取武器
@@ -233,38 +208,14 @@ void AbstractCity::afterBattle()
         // 一方死亡，另一方存活
         if (red->isAlive() && !blue->isAlive()) {
             red->pickWeapons(blue);
+            this->m_blueWarriorExists = false;
+            this->m_warriors_blue.pop_back();
         }
         if (blue->isAlive() && !red->isAlive()) {
             blue->pickWeapons(blue);
-        }
-        // 清理内存
-        if (!red->isAlive()) {
-            // 取出武器
-            auto weapons = red->dropWeapons();
-            this->weapons.insert(this->weapons.end(), weapons.begin(), weapons.end());
-            red->die();
             this->m_redWarriorExists = false;
-            m_warriors_red.clear();
-            // std::cout << "red die" << m_warriors_red.size() << std::endl;
+            this->m_warriors_red.pop_back();
         }
-        if (!blue->isAlive()) {
-            // 取出武器
-            auto weapons = blue->dropWeapons();
-            this->weapons.insert(this->weapons.end(), weapons.begin(), weapons.end());
-            blue->die();
-            this->m_blueWarriorExists = false;
-            m_warriors_blue.clear();
-            // std::cout << "blue die" << m_warriors_blue.size() << std::endl;
-        }
-    }
-}
-
-std::shared_ptr<Warrior> AbstractCity::getEnemy(head_color color)
-{
-    if (color == head_color::red) {
-        return m_warriors_blue.back();
-    } else {
-        return m_warriors_red.back();
     }
 }
 
@@ -279,6 +230,38 @@ void AbstractCity::wolfSnatch(int hour, int minute)
         if (blue->getType() == WarriorType::wolf && red->getType() != WarriorType::wolf) {
             // 蓝方是狼，红方不是狼
             dynamic_cast<Wolf*>(blue.get())->snatchWeapons(red, hour, minute);
+        }
+    }
+}
+
+void AbstractCity::lionEscape(int hour, int minute)
+{
+    if (m_redWarriorExists) {
+        auto red = m_warriors_red.back();
+        if (red->getLoyalty() <= 0 && red->getType() == WarriorType::lion) {
+            // std::cout << "the loyalty of " << warrior->getTypeName() << " " << warrior->getNumber() << " is 0" << std::endl;
+            // e.g. 000:05 blue lion 1 ran away
+            std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' '
+                      << red->getHeadColorName() << " " << red->getTypeName() << " " << red->getNumber()
+                      << " ran away" << std::endl;
+            // 从容器中移除lion
+            red->die();
+            m_warriors_red.clear();
+            m_redWarriorExists = false;
+        }
+    }
+    if (m_blueWarriorExists) {
+        auto blue = m_warriors_blue.back();
+        if (blue->getLoyalty() <= 0 && blue->getType() == WarriorType::lion) {
+            // std::cout << "the loyalty of " << warrior->getTypeName() << " " << warrior->getNumber() << " is 0" << std::endl;
+            // e.g. 000:05 blue lion 1 ran away
+            std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' '
+                      << blue->getHeadColorName() << " " << blue->getTypeName() << " " << blue->getNumber()
+                      << " ran away" << std::endl;
+            // 从容器中移除lion
+            blue->die();
+            m_warriors_blue.clear();
+            m_blueWarriorExists = false;
         }
     }
 }

@@ -23,7 +23,6 @@ private:
     bool m_isAbleToCreate = true;
 
     std::vector<std::shared_ptr<Warrior>> m_warriors; // 战士列表
-    // std::vector<int> m_warriors_count;                // 战士记录
     std::array<int, 5> m_warriors_count = { 0, 0, 0, 0, 0 };
     int m_totalWarriors = 0; // 战士总数
     // 在生成战士时，需要按照顺序生成，所以需要一个索引
@@ -37,7 +36,6 @@ public:
     std::shared_ptr<AbstractCity> previousCity() override { return nullptr; }
     // 事件接口
     void logEvent(int hours); // 事件记录
-    void lionEscape(); // lion 逃跑
     void warriorsMarch(); // 武士前进
     void reportLife(); // 司令部报告生命值
     bool isStopped() const { return !this->m_isAbleToCreate; } // 是否停止制造武士
