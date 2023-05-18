@@ -98,15 +98,6 @@ void Warrior::march()
 
     auto currentCity = this->getCurrentCity();
 
-    // 如果当前城市是敌人的司令部,则战士到达敌人司令部,游戏结束
-    if (currentCity->isHeadquarter()) {
-        auto current = std::dynamic_pointer_cast<Headquarter>(currentCity);
-        if (current->getColor() != this->getHeadColor()) {
-            current->occupy();
-            return;
-        }
-    }
-
     std::shared_ptr<AbstractCity> nextCity = currentCity->nextCity(m_headColor);
     // std::cout << "the current city is " << currentCity->getCityNumber() << std::endl;
     // std::cout << "the next city is " << nextCity->getCityNumber() << std::endl;
@@ -118,7 +109,14 @@ void Warrior::march()
     // 我大概知道问题出现在哪里了，，removewarrior() 将这个武士类删除掉了，但是为什么，武士在 headquarter 的那次不会呢？
     // 至少在这次函数被调用之前，Headquarter 中都应该有这个武士类的。
     // 是shared指针的调用方式有问题，使用了 shared_from_this() 之后，就不会出现这个问题了
-    setCity(nextCity);
+    setCity(nextCity); // 如果当前城市是敌人的司令部,则战士到达敌人司令部,游戏结束
+    if (nextCity->isHeadquarter()) {
+        auto current = std::dynamic_pointer_cast<Headquarter>(nextCity);
+        if (current->getColor() != this->getHeadColor()) {
+            current->occupy();
+            return;
+        }
+    }
 
     // 派生类特性的实现
     switch (this->getType()) {
@@ -214,7 +212,7 @@ Warrior::~Warrior()
     // }
 }
 
-void Wolf::snatchWeapons(std::shared_ptr<Warrior> enemy)
+void Wolf::snatchWeapons(std::shared_ptr<Warrior> enemy, int hour, int minute)
 {
     // 如果敌人是 wolf,则不抢夺
     if (enemy->getType() == WarriorType::wolf) {
@@ -230,7 +228,8 @@ void Wolf::snatchWeapons(std::shared_ptr<Warrior> enemy)
             if (this->weapons.size() >= 10) {
                 break;
             } else {
-                std::cout << "wolf " << this->getNumber() << " took " << weapon->getWeaponName() << " from " << enemy->getHeadColorName() << " " << enemy->getTypeName() << " " << enemy->getNumber() << " in city " << this->currentCity->getCityNumber() << std::endl;
+                std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
+                std::cout << this->getHeadColorName() << " wolf " << this->getNumber() << " took " << weapon->getWeaponName() << " from " << enemy->getHeadColorName() << " " << enemy->getTypeName() << " " << enemy->getNumber() << " in city " << this->currentCity->getCityNumber() << std::endl;
                 if (weaponType == WeaponType::arrow) {
                     if (weapon->getUsed() == false) {
                         this->weapons.emplace_back(std::move(weapon));

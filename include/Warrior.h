@@ -103,7 +103,8 @@ public:
     }
     // 清理内存
     void die()
-    {}
+    {
+    }
     // TODO 战士前进
     void march();
 
@@ -201,7 +202,7 @@ class Wolf : public Warrior {
 public:
     // TODO 特有方法
     // 抢夺敌人武器
-    void snatchWeapons(std::shared_ptr<Warrior> enemy);
+    void snatchWeapons(std::shared_ptr<Warrior> enemy, int hour, int minute);
     Wolf(int number, head_color color)
         : Warrior(WarriorType::wolf, number, color)
     {

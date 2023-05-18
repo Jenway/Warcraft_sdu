@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <string>
 #include <type_traits>
 #if !defined(ABSTRACT_CITY_H)
 
@@ -27,6 +28,8 @@ protected:
     bool isThisHeadquater = false;
     // 战斗了吗
     bool isJustBattled = false;
+    // <司令部>是否被敌人占领
+    bool isOccupiedByEnemy = false;
 
 public:
     // set neighbor
@@ -37,6 +40,7 @@ public:
     virtual std::shared_ptr<AbstractCity> previousCity() { return nullptr; }
     // 返回城市编号
     virtual int getCityNumber() { return 0; }
+    virtual std::string getHeadColorName() { return ""; }
     // 状态返回
     bool isBattle() { return m_redWarriorExists && m_blueWarriorExists; }
 
@@ -47,12 +51,14 @@ public:
     void battle();
     void attackOnBattle(std::shared_ptr<Warrior> red, std::shared_ptr<Warrior> blue);
     void afterBattle();
+    bool isOccupied() { return this->isOccupiedByEnemy; }
+    void occupy() { this->isOccupiedByEnemy = true; }
     // 武士相关
     void reportWeapon(int hour, int minute);
     void warriorMarch();
     void reportWarriorMarch(int hour, int minute);
     void reportBattle(int hour, int minute); // 报告战斗情况
-    void wolfSnatch();
+    void wolfSnatch(int hour, int minute);
     // 输入敌人颜色，返回对应的武士
     std::shared_ptr<Warrior> getEnemy(head_color color);
 

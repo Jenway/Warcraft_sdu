@@ -21,8 +21,7 @@ private:
 
     // 司令部是否还能制造武士
     bool m_isAbleToCreate = true;
-    // 是否被敌人占领
-    bool isOccupiedByEnemy = false;
+
     std::vector<std::shared_ptr<Warrior>> m_warriors; // 战士列表
     // std::vector<int> m_warriors_count;                // 战士记录
     std::array<int, 5> m_warriors_count = { 0, 0, 0, 0, 0 };
@@ -42,10 +41,8 @@ public:
     void warriorsMarch(); // 武士前进
     void reportLife(); // 司令部报告生命值
     bool isStopped() const { return !this->m_isAbleToCreate; } // 是否停止制造武士
-    bool isOccupied() const { return this->isOccupiedByEnemy; } // 是否被敌人占领
-
+    std::string getHeadColorName() override { return this->getColorName(); }
     // checkmate~!
-    void occupy() { this->isOccupiedByEnemy = true; } // 占领司令部
     void stopCreate() { this->m_isAbleToCreate = false; } // 停止制造武士
     // getter
     int getLife() const { return this->m_life; } // 获取司令部生命元

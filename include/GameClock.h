@@ -6,14 +6,15 @@ class GameClock {
 private:
     int hours = 0;
     int minutes = 0;
-    static int end;
+    int endTime = 0;
 
 public:
     int getHours() { return hours; }
     int getMinutes() { return minutes; }
-    static int getEnd() { return end; }
-    static void setEndTime(int endtime) { end = endtime; }
-    bool isEnd();
+    bool isEnd()
+    {
+        return hours * 60 + minutes > endTime;
+    }
     void update()
     {
         minutes += 5;
@@ -21,6 +22,11 @@ public:
             hours++;
             minutes = 0;
         }
+    }
+    GameClock() = delete;
+    GameClock(int endtime)
+        : endTime(endtime)
+    {
     }
 };
 #endif

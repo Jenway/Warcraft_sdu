@@ -74,10 +74,10 @@ bool Headquarter::createWarrior()
     std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' '
               << this->getColorName() << " " << warrior->getTypeName() << " " << warrior->getNumber()
               << " born" << std::endl;
-    if (warrior->getType() == WarriorType::dragon) {
-        warrior->setMorale(static_cast<double>(this->getLife()) / static_cast<double>(warrior->getHP()));
-        std::cout << "Its morale is " << std::fixed << std::setprecision(2) << warrior->getMorale() << std::endl;
-    }
+    // if (warrior->getType() == WarriorType::dragon) {
+    //     warrior->setMorale(static_cast<double>(this->getLife()) / static_cast<double>(warrior->getHP()));
+    //     std::cout << "Its morale is " << std::fixed << std::setprecision(2) << warrior->getMorale() << std::endl;
+    // }
     if (warrior->getType() == WarriorType::lion) {
 
         warrior->setLoyalty(this->getLife());
@@ -111,7 +111,6 @@ void Headquarter::lionEscape()
     int hour = this->clock->getHours();
     int minute = this->clock->getMinutes();
     // 遍历容器中的lion
-
     for (auto i = m_warriors.begin(); i != m_warriors.end();) {
         auto warrior = *i;
         if (warrior->getType() == WarriorType::lion) {

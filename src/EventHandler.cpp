@@ -45,7 +45,11 @@ void EventHandler::onClockUpdate()
         lionEscape();
         break;
     case 10: // 每小时第 10 分,武士前进
+
         warriorsMarch();
+        if (isGameOver()) {
+            return;
+        }
         break;
     case 35: // 每小时第 35 分,wolf 抢武器
         wolfSnatch();
@@ -103,11 +107,13 @@ void EventHandler::warriorsMarch()
 
 void EventHandler::wolfSnatch()
 {
-    this->redHQ->wolfSnatch();
+    int hour = clock->getHours();
+    int minute = clock->getMinutes();
+    this->redHQ->wolfSnatch(hour, minute);
     for (auto city : cities) {
-        city->wolfSnatch();
+        city->wolfSnatch(hour, minute);
     }
-    this->blueHQ->wolfSnatch();
+    this->blueHQ->wolfSnatch(hour, minute);
 }
 
 void EventHandler::reportBattle()

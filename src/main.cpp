@@ -73,7 +73,7 @@ void part3_test(std::string input_file_path)
         Lion::setDefaultKloyalty(K);
 
         // T 的使用 要求输出从0时0分开始，到时间T为止(包括T)的所有事件。T以分钟为单位，0 <= T <= 6000
-        GameClock::setEndTime(T);
+        std::shared_ptr<GameClock> clock = std::make_shared<GameClock>(T);
 
         // 第二行：五个整数，依次是 dragon 、ninja、iceman、lion、wolf 的初始生命值。它们都大于0小于等于200
 
@@ -100,7 +100,7 @@ void part3_test(std::string input_file_path)
         // 如对第一组数据就输出 Case 1:
         std::cout << "Case " << i + 1 << ":" << std::endl;
         // 然后按恰当的顺序和格式输出到时间T为止发生的所有事件。每个事件都以事件发生的时间开头，时间格式是“时:分”，“时”有三位，“分”有两位。
-        std::shared_ptr<GameClock> clock = std::make_shared<GameClock>();
+
         eventHandler.setCities(cities);
         eventHandler.setClock(clock);
 

@@ -24,6 +24,7 @@ private:
     void battle();
     void reportBattle();
     void afterBattle();
+    bool isHqOccupied();
 
 public:
     void setClock(std::shared_ptr<GameClock> clock);
