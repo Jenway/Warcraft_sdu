@@ -6,11 +6,13 @@
 #include <iostream>
 #include <memory>
 #include <ostream>
+#include <sstream>
 #include <string>
 
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
 #include "../include/WarriorFactory.h"
+#include "../include/gameIO.h"
 
 int Headquarter::m_defaultLife = 0;
 
@@ -56,13 +58,18 @@ bool Headquarter::createWarrior()
     this->m_warrior_index = (this->m_warrior_index + 1) % 5;
     this->setLifeViaCost(warrior->getHP());
     // log (part 3)
-    std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' '
-              << this->getColorName() << " " << warrior->getTypeName() << " " << warrior->getNumber()
-              << " born" << std::endl;
+    std::stringstream ss;
+    ss << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' '
+       << this->getColorName() << " " << warrior->getTypeName() << " " << warrior->getNumber()
+       << " born" << std::endl;
+    std::string str = ss.str();
+    gameIO::print(str);
     if (warrior->getType() == WarriorType::lion) {
 
         warrior->setLoyalty(this->getLife());
-        std::cout << "Its loyalty is " << warrior->getLoyalty() << std::endl;
+
+        str = "Its loyalty is " + std::to_string(warrior->getLoyalty()) + '\n';
+        gameIO::print(str);
     }
     // set city and home pointer
     warrior->setCity(shared_from_this());
@@ -90,7 +97,10 @@ void Headquarter::reportLife()
     int hour = this->clock->getHours();
     int minute = this->clock->getMinutes();
     // 001:50 20 elements in red headquarter
-    std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ' << this->getLife() << " elements in " << this->getColorName() << " headquarter" << std::endl;
+    std::stringstream ss;
+    ss << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ' << this->getLife() << " elements in " << this->getColorName() << " headquarter" << std::endl;
+    std::string str = ss.str();
+    gameIO::print(str);
 }
 
 bool Headquarter::isAbleToCreate(int warrior_index)

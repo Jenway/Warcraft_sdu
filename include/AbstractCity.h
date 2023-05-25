@@ -1,3 +1,4 @@
+#include "include/Enums.h"
 #include <cstddef>
 #include <string>
 #include <type_traits>
@@ -42,6 +43,11 @@ public:
     virtual std::string getHeadColorName() { return ""; }
     // 返回是否是司令部
     bool isHeadquarter() { return this->isThisHeadquater; }
+    // 是否有红/蓝武士
+    bool getRedWarriorExitst() { return this->m_redWarriorExists; }
+    bool getBlueWarriorExitst() { return this->m_blueWarriorExists; }
+    WarriorType getRedWarriorType();
+    WarriorType getBlueWarriorType();
 
     // 事件
     void warriorMarch();

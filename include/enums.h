@@ -2,6 +2,7 @@
 
 #if !defined(ENUMS_HH)
 #define ENUMS_HH
+#include <vector>
 
 #include <array>
 #include <string>
@@ -26,12 +27,13 @@ enum class WarriorType {
     Count
 };
 
-const static std::array<std::string, 5> warrior_type_name = {
+const static std::array<std::string, 6> warrior_type_name = {
     "dragon",
     "ninja",
     "iceman",
     "lion",
     "wolf",
+    "Count",
 };
 
 enum class WeaponType {
@@ -46,5 +48,18 @@ const static std::array<std::string, 3> weapon_type_name = {
     "bomb",
     "arrow",
 };
+class inputData {
+public:
+    int game_round = 0;
+    int M = 0, N = 0, K = 0, T = 0;
+    std::array<int, 5> default_lives {};
+    std::array<int, 5> default_attacks {};
+};
 
+class updateData {
+public:
+    int cityNumber = 0;
+    std::vector<WarriorType> redWarrior {};
+    std::vector<WarriorType> blueWarrior {};
+};
 #endif // ENUMS_HH

@@ -48,7 +48,7 @@ void EventHandler::lionEscape()
     int hour = clock->getHours();
     int minute = clock->getMinutes();
     this->redHQ->lionEscape(hour, minute);
-    for (auto city : cities) {
+    for (auto& city : cities) {
         city->lionEscape(hour, minute);
     }
     this->blueHQ->lionEscape(hour, minute);
@@ -63,14 +63,14 @@ void EventHandler::warriorsMarch()
     this->blueHQ->setWarriorArrived();
 
     this->redHQ->warriorMarch();
-    for (auto city : cities) {
+    for (auto& city : cities) {
         city->warriorMarch();
     }
     this->blueHQ->warriorMarch();
 
     // 从西到东遍历城市，报告 march
     this->redHQ->reportWarriorMarch(hour, minute);
-    for (auto city : cities) {
+    for (auto& city : cities) {
         city->reportWarriorMarch(hour, minute);
     }
     this->blueHQ->reportWarriorMarch(hour, minute);
@@ -81,7 +81,7 @@ void EventHandler::wolfSnatch()
     int hour = clock->getHours();
     int minute = clock->getMinutes();
     this->redHQ->wolfSnatch(hour, minute);
-    for (auto city : cities) {
+    for (auto& city : cities) {
         city->wolfSnatch(hour, minute);
     }
     this->blueHQ->wolfSnatch(hour, minute);
@@ -98,7 +98,7 @@ void EventHandler::reportWeapon()
     int hour = clock->getHours();
     int minute = clock->getMinutes();
     // 从西到东遍历城市，报告武器情况
-    for (auto city : cities) {
+    for (auto& city : cities) {
         city->reportWeapon(hour, minute);
     }
 }
@@ -107,7 +107,7 @@ void EventHandler::battle()
 {
     // 从西到东遍历城市，塔塔开~
     redHQ->battle();
-    for (auto city : cities) {
+    for (auto& city : cities) {
         city->battle();
     }
     blueHQ->battle();
@@ -117,7 +117,7 @@ void EventHandler::reportBattle()
     int hour = clock->getHours();
     int minute = clock->getMinutes();
     this->redHQ->reportBattle(hour, minute);
-    for (auto city : cities) {
+    for (auto& city : cities) {
         city->reportBattle(hour, minute);
     }
     this->blueHQ->reportBattle(hour, minute);
@@ -127,7 +127,7 @@ void EventHandler::afterBattle()
 {
     // 从西到东遍历城市，处理战斗后的事情
     this->redHQ->afterBattle();
-    for (auto city : cities) {
+    for (auto& city : cities) {
         city->afterBattle();
     }
     this->blueHQ->afterBattle();

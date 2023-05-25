@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>Resources/bokiChan_icon.png</file>
+        <file>Resources/PathAndObjects.png</file>
+        <file>Resources/planetblue.png</file>
+        <file>Resources/planetred.png</file>
+        <file>Resources/bridge.png</file>
+        <file>Resources/wolf.png</file>
+        <file>Resources/dragon.png</file>
+        <file>Resources/iceman.png</file>
+        <file>Resources/lion.png</file>
+        <file>Resources/ninja.png</file>
+        <file>Resources/dove.png</file>
+        <file>Resources/point.jpg</file>
+        <file>Resources/tom.jpg</file>
+        <file>Resources/jerry.jpg</file>
+        <file>Resources/sad1.jpg</file>
+        <file>Resources/sad2.jpg</file>
+    </qresource>
+</RCC>

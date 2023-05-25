@@ -4,11 +4,13 @@
 #include "../include/Headquarter.h"
 #include "../include/Weapon.h"
 #include "../include/WeaponFactory.h"
+#include "../include/gameIO.h"
 
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <sstream>
 #include <vector>
 
 // 初始化战士的默认生命值 全部为0 ，防止调用时出错
@@ -18,10 +20,10 @@ int Lion::K_loyalty = 0;
 
 void Warrior::attack(std::shared_ptr<Warrior> enemy)
 {
-    bool DEBUG = false;
-    if (this->getNumber() == 6 && enemy->getNumber() == 8) {
-        DEBUG = true;
-    }
+    // bool DEBUG = false;
+    // if (this->getNumber() == 6 && enemy->getNumber() == 8) {
+    //     DEBUG = true;
+    // }
     bool onAttack = true;
     while (onAttack) {
         // check if self is dead or self own weapon
@@ -199,9 +201,10 @@ void Warrior::pickWeapons(std::shared_ptr<Warrior> enemy)
 
 void Warrior::reportWeapon(int hour, int minute) const // 输出武器信息
 {
+    std::stringstream ss;
     // 000:55 blue lion 1 has 0 sword 1 bomb 0 arrow and 10 elements
-    std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
-    std::cout << this->getHeadColorName() << " " << this->getTypeName() << " " << this->getNumber() << " has ";
+    ss << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
+    ss << this->getHeadColorName() << " " << this->getTypeName() << " " << this->getNumber() << " has ";
     int sword = 0, bomb = 0, arrow = 0;
     for (auto& weapon : weapons) {
         switch (weapon->getType()) {
@@ -218,7 +221,8 @@ void Warrior::reportWeapon(int hour, int minute) const // 输出武器信息
             break;
         }
     }
-    std::cout << sword << " sword " << bomb << " bomb " << arrow << " arrow and " << this->getHP() << " elements" << std::endl;
+    ss << sword << " sword " << bomb << " bomb " << arrow << " arrow and " << this->getHP() << " elements" << std::endl;
+    gameIO::print(ss.str());
 }
 
 Warrior::Warrior(WarriorType type, int number, head_color color)
@@ -237,6 +241,7 @@ Warrior::~Warrior()
 
 void Wolf::snatchWeapons(std::shared_ptr<Warrior> enemy, int hour, int minute)
 {
+    std::stringstream ss;
     // 如果敌人是 wolf,则不抢夺
     if (enemy->getType() == WarriorType::wolf) {
         return;
@@ -283,7 +288,8 @@ void Wolf::snatchWeapons(std::shared_ptr<Warrior> enemy, int hour, int minute)
             enemy->eraseWeapon(indexToRemove);
         }
 
-        std::cout << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
-        std::cout << this->getHeadColorName() << " wolf " << this->getNumber() << " took " << tookWeaponNum << " " << weaponTypeName << " from " << enemy->getHeadColorName() << " " << enemy->getTypeName() << " " << enemy->getNumber() << " in city " << this->currentCity->getCityNumber() << std::endl;
+        ss << std::setw(3) << std::setfill('0') << hour << ':' << std::setw(2) << std::setfill('0') << minute << ' ';
+        ss << this->getHeadColorName() << " wolf " << this->getNumber() << " took " << tookWeaponNum << " " << weaponTypeName << " from " << enemy->getHeadColorName() << " " << enemy->getTypeName() << " " << enemy->getNumber() << " in city " << this->currentCity->getCityNumber() << std::endl;
+        gameIO::print(ss.str());
     }
 }
