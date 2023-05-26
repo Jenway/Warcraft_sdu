@@ -16,5 +16,9 @@
         <file>Resources/jerry.jpg</file>
         <file>Resources/sad1.jpg</file>
         <file>Resources/sad2.jpg</file>
+        <file>Resources/blueHQ1.png</file>
+        <file>Resources/blueHQ2.png</file>
+        <file>Resources/redHQ1.png</file>
+        <file>Resources/redHQ2.png</file>
     </qresource>
 </RCC>

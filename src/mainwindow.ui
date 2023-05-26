@@ -30,79 +30,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>980</x>
-      <y>50</y>
-      <width>264</width>
-      <height>482</height>
-     </rect>
-    </property>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="1" column="0">
-      <widget class="QPlainTextEdit" name="textInput">
-       <property name="placeholderText">
-        <string>Input game data here</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label">
-       <property name="font">
-        <font>
-         <family>Arial</family>
-         <pointsize>16</pointsize>
-         <italic>false</italic>
-         <bold>true</bold>
-         <underline>false</underline>
-        </font>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>OUTPUT</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::PlainText</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QTextBrowser" name="textBrowser"/>
-     </item>
-     <item row="4" column="0">
-      <widget class="QPushButton" name="gameStartButton">
-       <property name="text">
-        <string>Start</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" colspan="2">
-      <widget class="QLabel" name="label_2">
-       <property name="font">
-        <font>
-         <family>Arial</family>
-         <pointsize>16</pointsize>
-         <italic>false</italic>
-         <bold>true</bold>
-         <underline>false</underline>
-        </font>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>INPUT</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::PlainText</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
@@ -199,6 +126,86 @@ font: 700 20pt &quot;等线&quot;;</string>
     <property name="text">
      <string/>
     </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>981</x>
+      <y>51</y>
+      <width>258</width>
+      <height>482</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>16</pointsize>
+         <italic>false</italic>
+         <bold>true</bold>
+         <underline>false</underline>
+        </font>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>INPUT</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::PlainText</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QPlainTextEdit" name="textInput">
+       <property name="placeholderText">
+        <string>Input game data here</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>16</pointsize>
+         <italic>false</italic>
+         <bold>true</bold>
+         <underline>false</underline>
+        </font>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>OUTPUT</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::PlainText</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QTextBrowser" name="textBrowser"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="gameStartButton">
+       <property name="text">
+        <string>Start</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="defaultData">
+       <property name="text">
+        <string>Default Data</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

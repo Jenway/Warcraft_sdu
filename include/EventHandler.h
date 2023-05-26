@@ -1,19 +1,16 @@
 #if !defined(EVENTHANDLER_H)
 #define EVENTHANDLER_H
 
-#include "../src/mainwindow.h"
 #include "GameClock.h"
 #include "Headquarter.h"
-#include <QObject>
 #include <memory>
-
 
 class EventHandler {
 private:
-    std::shared_ptr<GameClock> clock;
-    std::shared_ptr<Headquarter> redHQ;
-    std::shared_ptr<Headquarter> blueHQ;
-    std::vector<std::shared_ptr<City>> cities;
+    std::shared_ptr<GameClock> clock {};
+    std::shared_ptr<Headquarter> redHQ {};
+    std::shared_ptr<Headquarter> blueHQ {};
+    std::vector<std::shared_ptr<City>> cities {};
     void spawnWarrior();
     void lionEscape();
     void warriorsMarch();
@@ -24,16 +21,15 @@ private:
     void reportBattle();
     void afterBattle();
 
-
 public:
     void setClock(std::shared_ptr<GameClock> clock);
     void setCities(std::vector<std::shared_ptr<City>> cities);
     void onClockUpdate();
     bool isGameOver();
+    bool isRedWin();
     EventHandler() = delete;
     EventHandler(std::shared_ptr<Headquarter> redHQ, std::shared_ptr<Headquarter> blueHQ)
-        :
-         redHQ(redHQ)
+        : redHQ(redHQ)
         , blueHQ(blueHQ)
     {
     }

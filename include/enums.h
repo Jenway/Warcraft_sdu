@@ -2,10 +2,10 @@
 
 #if !defined(ENUMS_HH)
 #define ENUMS_HH
-#include <vector>
 
 #include <array>
 #include <string>
+#include <vector>
 
 enum class head_color {
     red,
@@ -24,15 +24,17 @@ enum class WarriorType {
     iceman,
     lion,
     wolf,
+    none,
     Count
 };
 
-const static std::array<std::string, 6> warrior_type_name = {
+const static std::array<std::string, 7> warrior_type_name = {
     "dragon",
     "ninja",
     "iceman",
     "lion",
     "wolf",
+    "NONE",
     "Count",
 };
 
@@ -58,7 +60,10 @@ public:
 
 class updateData {
 public:
+    int hour = 0, minute = 0;
     int cityNumber = 0;
+    bool redTaken = false;
+    bool blueTaken = false;
     std::vector<WarriorType> redWarrior {};
     std::vector<WarriorType> blueWarrior {};
 };

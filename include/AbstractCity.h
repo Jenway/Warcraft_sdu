@@ -1,27 +1,25 @@
-#include "include/Enums.h"
+#if !defined(ABSTRACT_CITY_H)
+#define ABSTRACT_CITY_H
+#include "Enums.h"
 #include <cstddef>
+#include <memory>
 #include <string>
 #include <type_traits>
-#if !defined(ABSTRACT_CITY_H)
-
-#define ABSTRACT_CITY_H
-
-#include "Enums.h"
-#include <memory>
 #include <vector>
+
 
 class Warrior;
 class AbstractCity : public std::enable_shared_from_this<AbstractCity> {
 protected:
     // 在这个城市的武士
-    std::vector<std::shared_ptr<Warrior>> m_warriors_blue;
-    std::vector<std::shared_ptr<Warrior>> m_warriors_red;
+    std::vector<std::shared_ptr<Warrior>> m_warriors_blue{};
+    std::vector<std::shared_ptr<Warrior>> m_warriors_red{};
     // 状态，是否有红蓝武士
     bool m_redWarriorExists = false;
     bool m_blueWarriorExists = false;
     // neighbor
-    std::shared_ptr<AbstractCity> m_leftCity;
-    std::shared_ptr<AbstractCity> m_rightCity;
+    std::shared_ptr<AbstractCity> m_leftCity{};
+    std::shared_ptr<AbstractCity> m_rightCity{};
     // 判断是否是 headquater
     bool isThisHeadquater = false;
     // 战斗了吗

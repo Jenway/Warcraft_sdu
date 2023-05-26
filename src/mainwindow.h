@@ -1,14 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "gameframe.h"
-#include "include/Enums.h"
+#include "../include/Enums.h"
+#include "GameFrame.h"
 #include <QCloseEvent>
 #include <QEvent>
 #include <QFrame>
 #include <QMainWindow>
 #include <vector>
-
 
 namespace Ui {
 class MainWindow;
@@ -32,11 +31,10 @@ private:
     void getInput();
 
 protected:
-    void paintEvent(QPaintEvent*);
-    // void mouseMoveEvent(QMouseEvent* event);
-    // void mouseReleaseEvent(QMouseEvent* event);
+
     void closeEvent(QCloseEvent*);
 private slots:
     void on_gameStartButton_clicked();
+    void on_defaultData_clicked();
 };
 #endif // MAINWINDOW_H

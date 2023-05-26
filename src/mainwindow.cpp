@@ -1,9 +1,8 @@
 #include "mainwindow.h"
+#include "../include/Enums.h"
 #include "../include/Game.h"
 #include "../include/GameIO.h"
-#include "gameframe.h"
-#include "include/Enums.h"
-#include "src/mainwindow.h"
+#include "GameFrame.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
@@ -11,6 +10,7 @@
 #include <QTextStream>
 #include <iostream>
 #include <memory>
+#include <qdebug.h>
 #include <qframe.h>
 #include <qlabel.h>
 #include <qpainter.h>
@@ -21,12 +21,11 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Warcraft SDU");
+    this->setWindowTitle("Warcraft SDU @Jenway");
     this->setWindowIcon(QIcon(":images/Resources/bokiChan_icon.png"));
     gameFrame = new GameFrame(this);
     gameFrame->setFixedSize(this->size().width() * 2 / 3, this->size().height() * 2 / 3);
     gameFrame->move(0, this->size().height() - gameFrame->height());
-
     gameIO::setOutputCallback([&](const std::string& msg) {
         this->ui->textBrowser->insertPlainText(msg.c_str());
     });
@@ -42,10 +41,6 @@ void MainWindow::rungame(inputData data)
     std::unique_ptr<Game> game = std::make_unique<Game>(data, this);
     std::vector<updateData> updateDatas = game->run();
     this->gameFrame->updateFrame(updateDatas);
-}
-
-void MainWindow::paintEvent(QPaintEvent*)
-{
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -87,6 +82,12 @@ void MainWindow::on_gameStartButton_clicked()
         rungame(data);
     }
     gameFrame->showAnime();
+}
+
+void MainWindow::on_defaultData_clicked()
+{
+    this->ui->textInput->insertPlainText(
+        "4\n500 6 100 6000\n20 20 30 10 20\n5 5 5 5 5\n1000 15 100 5430\n20 20 30 10 20\n5 5 5 5 5\n50 6 100 600\n20 20 30 10 20\n5 5 5 5 5\n1000 6 100 6000\n20 20 30 10 20\n5 5 5 5 5\n");
 }
 
 void MainWindow::getInput()

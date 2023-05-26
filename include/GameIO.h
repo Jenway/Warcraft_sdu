@@ -1,10 +1,10 @@
-#include "include/Enums.h"
 #if !defined(INPUTOUTPUT_H)
 #define INPUTOUTPUT_H
 
-#include <QDebug>
 #include <array>
 #include <filesystem>
+#include <functional>
+
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -20,14 +20,11 @@ public:
     }
     gameIO() = delete;
     ~gameIO() = delete;
-    // static void getInput(std::vector<inputData>& datas)
-    // {
-    // }
 
     static void print(std::string str)
     {
-        std::cout << str << std::endl;
-        qDebug() << str.c_str();
+        std::cout << str;
+        // qDebug() << str.c_str();
         if (s_outputCb) {
             s_outputCb(str);
         }

@@ -9,43 +9,49 @@ else()
     set(CMAKE_PREFIX_PATH $ENV{QTDIRMINGW})    
 endif()
 
-SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# 设置Qt工具链的环境变量
+# set qt toolchain
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-
-
-# 设置 compile_commands.json
+# set compile_commands.json for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 
 # set cpp standard
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
 
-# qt_add_resources(RESOURCES src/assets.qrc)
-
-if(MSVC)
-    # 添加编译选项, 设置 输入代码的编码格式为 utf-8
-    # add_compile_options("/source-charset:utf-8")
-    # add_compile_options("/execution-charset:gbk")
-endif()
-
-
 # add the executable
 aux_source_directory(src/. SRC_LIST)
 
-# add_executable(${PROJECT_NAME} ${SRC_LIST})
-
+# add GUI version of the executable
 qt_add_executable(${PROJECT_NAME}
+    main.cpp
     ${SRC_LIST}
+    app_win32.rc
     res.qrc
 )
+
+# add CLI version of the executable
+add_executable(
+    ${PROJECT_NAME}_CLI 
+    main_CLI.cpp
+    src/AbstractCity.cpp
+    src/EventHandler.cpp
+    src/GameIO.cpp
+    src/Headquarter.cpp
+    src/Warrior.cpp
+)
+
+# add support for unicode in MSVC
+if(MSVC)
+    target_compile_options(${PROJECT_NAME}_CLI PRIVATE "/source-charset:utf-8")
+endif()
+
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets Qt6::Core)
 

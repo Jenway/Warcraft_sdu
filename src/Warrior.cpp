@@ -1,10 +1,11 @@
 // src\Warrior.cpp 战士类的实现
 #include "../include/Warrior.h"
 #include "../include/Enums.h"
+#include "../include/GameIO.h"
 #include "../include/Headquarter.h"
 #include "../include/Weapon.h"
 #include "../include/WeaponFactory.h"
-#include "../include/gameIO.h"
+
 
 #include <algorithm>
 #include <iomanip>

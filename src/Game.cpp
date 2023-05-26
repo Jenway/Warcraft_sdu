@@ -7,8 +7,9 @@
 #include "../include/GameIO.h"
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
-#include "include/Game.h"
+#include <fstream>
 #include <memory>
+#include <string>
 #include <vector>
 
 std::vector<updateData> Game::run()
@@ -78,10 +79,46 @@ std::vector<updateData> Game::run()
     std::vector<updateData> update_datas;
     while (!isGameOver) {
         eventHandler.onClockUpdate();
-        update_datas.emplace_back(getUpdateData());
+        auto tempData = getUpdateData();
+        tempData.hour = clock->getHours();
+        tempData.minute = clock->getMinutes();
+        update_datas.emplace_back(tempData);
         isGameOver = eventHandler.isGameOver();
+        if (isGameOver) {
+            if (eventHandler.isRedWin()) {
+                update_datas.back().blueTaken = true;
+
+            } else {
+                update_datas.back().redTaken = true;
+            }
+        }
         clock->update();
     }
+
+    // // 读取updateData 写入文件
+    // std::fstream file;
+    // std::string filename = "updateData" + std::to_string(data.game_round) + ".txt";
+    // // 清空文件
+    // file.open(filename, std::ios::out | std::ios::app);
+
+    // for (auto update_data : update_datas) {
+
+    //     // cityNumber
+    //     file << update_data.cityNumber << std::endl;
+    //     // redWarrior
+    //     for (auto warriorType : update_data.redWarrior) {
+    //         file << static_cast<int>(warriorType) << " ";
+    //         file << warrior_type_name[static_cast<int>(warriorType)] << " ";
+    //     }
+    //     file << std::endl;
+    //     // blueWarrior
+    //     for (auto warriorType : update_data.blueWarrior) {
+    //         file << static_cast<int>(warriorType) << " ";
+    //         file << warrior_type_name[static_cast<int>(warriorType)] << " ";
+    //     }
+    //     file << std::endl;
+    // }
+
     return update_datas;
 }
 
@@ -93,9 +130,13 @@ updateData Game::getUpdateData()
     for (auto& city : *m_citys) {
         if (city->getRedWarriorExitst()) {
             update_data.redWarrior.push_back(city->getRedWarriorType());
+        } else {
+            update_data.redWarrior.push_back(WarriorType::none);
         }
         if (city->getBlueWarriorExitst()) {
             update_data.blueWarrior.push_back(city->getBlueWarriorType());
+        } else {
+            update_data.blueWarrior.push_back(WarriorType::none);
         }
     }
     return update_data;

@@ -1,6 +1,5 @@
 #include "../include/EventHandler.h"
 #include "../include/City.h"
-#include <iostream>
 
 void EventHandler::onClockUpdate()
 {
@@ -156,6 +155,15 @@ bool EventHandler::isGameOver()
         return true;
     } else if (redHQ->isStopped() && blueHQ->isStopped()
         && redHQ->getWarriorSum() == 0 && blueHQ->getWarriorSum() == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool EventHandler::isRedWin()
+{
+    if (blueHQ->isOccupied()) {
         return true;
     } else {
         return false;

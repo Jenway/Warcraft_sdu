@@ -9,10 +9,11 @@
 #include <sstream>
 #include <string>
 
+#include "../include/GameIO.h"
 #include "../include/Headquarter.h"
 #include "../include/Warrior.h"
 #include "../include/WarriorFactory.h"
-#include "../include/gameIO.h"
+
 
 int Headquarter::m_defaultLife = 0;
 

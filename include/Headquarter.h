@@ -22,13 +22,13 @@ private:
     // 司令部是否还能制造武士
     bool m_isAbleToCreate = true;
 
-    std::vector<std::shared_ptr<Warrior>> m_warriors; // 战士列表
+    std::vector<std::shared_ptr<Warrior>> m_warriors{}; // 战士列表
     std::array<int, 5> m_warriors_count = { 0, 0, 0, 0, 0 };
     int m_totalWarriors = 0; // 战士总数
     // 在生成战士时，需要按照顺序生成，所以需要一个索引
     int m_warrior_index = 0;
 
-    std::shared_ptr<GameClock> clock;
+    std::shared_ptr<GameClock> clock{};
 
 public:
     // override

@@ -11,4 +11,7 @@ guide.md
 part1.md
 part2.md
 part3.md
+CMakeLists.txt.user
+CMakeSettings.json
+app_win32.aps
 enc_temp_folder/

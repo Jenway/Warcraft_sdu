@@ -6,20 +6,18 @@
 #include <memory>
 #include <stdexcept>
 #include <vector>
-
 #include "../include/Enums.h"
 // #include "../include/City.h"
 // 不用包含City.h，因为City.h中包含了Warrior.h，会造成循环包含
 // 改为前向声明
-class City;
-class Headquarter;
 #include "../include/Weapon.h"
 // 不用包含Weapon.h，因为Weapon.h中包含了Warrior.h，会造成循环包含
 // 改为前向声明,但是前向声明不够，因为需要使用智能指针，而智能指针需要完整的类定义
 // 改为实现一个抽象接口类IWeapon.h
 // 然后又放弃了 :(
 #include "../include/AbstractCity.h"
-
+class City;
+class Headquarter;
 // 定义战士类
 class Warrior : public std::enable_shared_from_this<Warrior> {
 protected:

@@ -2,8 +2,7 @@
 #define GAMEFRAME_H
 
 #include "../include/Enums.h"
-#include "include/Enums.h"
-#include <QFrame>
+#include <qlabel.h>
 #include <qtmetamacros.h>
 #include <qwindowdefs.h>
 #include <vector>
@@ -12,7 +11,7 @@ namespace Ui {
 class GameFrame;
 }
 
-class GameFrame : public QFrame {
+class GameFrame : public QWidget {
     Q_OBJECT
 
 public:
@@ -22,13 +21,14 @@ public:
     void showAnime();
 
 protected slots:
-    void updataAnime();
+    void updateAnime();
 
 private:
     Ui::GameFrame* ui;
     std::vector<updateData> m_data {};
     updateData this_data;
     QTimer* timer;
+    QLabel* label;
     int frame = 0;
     int bridgeFrame = 0;
 

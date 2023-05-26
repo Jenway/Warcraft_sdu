@@ -1,13 +1,10 @@
-#include "include/Enums.h"
-#include <vector>
 #if !defined(GAME_H)
 #define GAME_H
-
 #include "../src/mainwindow.h"
 #include "City.h"
 #include "Enums.h"
-#include <QObject>
 #include <memory>
+#include <vector>
 
 class Game {
 
