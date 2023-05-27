@@ -1,6 +1,6 @@
 #include "GameFrame.h"
 #include "../include/Enums.h"
-#include "ui_gameframe.h"
+#include "ui_GameFrame.h"
 #include <QFrame>
 #include <QPainter>
 #include <QTime>

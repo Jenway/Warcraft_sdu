@@ -3,6 +3,7 @@ build/
 .vscode/
 test/
 .vs/
+.xmake/
 out/
 实验要求.txt
 .clang-format

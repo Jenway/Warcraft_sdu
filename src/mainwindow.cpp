@@ -46,9 +46,9 @@ void MainWindow::rungame(inputData data)
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     QMessageBox msg;
-    QString wintitle = QString("要结束游戏吗");
+    QString wintitle = QString("要结束游戏吗\n");
     msg.setWindowTitle(wintitle);
-    msg.setText("游戏会结束");
+    msg.setText("游戏会结束~");
     msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msg.setDefaultButton(QMessageBox::No);
     int result = msg.exec();
@@ -57,7 +57,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
         // 结束游戏，退出应用程序
         QApplication::quit();
     } else {
-        // 取消关闭事件，阻止窗口关闭
+        // 取消关闭事件， 阻止窗口关闭
         event->ignore();
     }
 }
