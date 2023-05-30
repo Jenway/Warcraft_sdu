@@ -4,7 +4,7 @@
 
 这是 SDU 计科专业 2022 级 `高级程序语言设计` 课程的大作业，以 old school 游戏魔兽争霸为背景。
 
-经查证原题来自 [北京大学 程序设计与算法（三）魔兽世界3(2020秋季)](https://http://cxsjsx.openjudge.cn/2018hwall/024/)。
+经查证原题来自 [北京大学 程序设计与算法（三）魔兽世界3(2020秋季)](https://cxsjsx.openjudge.cn/2018hwall/024/)。
 
 使用 C++ 编写，`Qt6.5` 增加了图形界面，使用 `cmake` or `xmake` 进行构建。
 
