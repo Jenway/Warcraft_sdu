@@ -59,20 +59,20 @@ jobs:
             Remove-Item $file -Recurse -Force
           }
         }
-        $zipFileName = "${{env.targetName}}.zip"
-        if(Test-Path $zipFileName){
-          Remove-Item $zipFileName -Force
-        }
+        # $zipFileName = "${{env.targetName}}.zip"
+        # if(Test-Path $zipFileName){
+        #   Remove-Item $zipFileName -Force
+        # }
 
-        # contains the relative path to the file to be compressed
-        Get-ChildItem -Path ./ | Compress-Archive -DestinationPath ${{env.targetName}}.zip
+        # # contains the relative path to the file to be compressed
+        # Get-ChildItem -Path ./ | Compress-Archive -DestinationPath ${{env.targetName}}.zip
 
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          ${{github.workspace}}/build/${{env.BUILD_TYPE}}/${{env.targetName}}.zip
+          ${{github.workspace}}/build/${{env.BUILD_TYPE}}/*
         tag_name: ${{github.ref}}
         body: |
           ${{github.ref}}
