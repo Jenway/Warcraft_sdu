@@ -73,7 +73,7 @@ jobs:
       with:
         files: |
           D:/a/Warcraft_sdu/Warcraft_sdu/build/Release/*.zip
-          D:/a/Warcraft_sdu/Warcraft_sdu/build/Release/${{env.targetName}}_CLI.zip
+          D:/a/Warcraft_sdu/Warcraft_sdu/build/Release/${{env.targetName}}_CLI.exe
           LICENSE
         tag_name: ${{github.ref}}
         body: |
