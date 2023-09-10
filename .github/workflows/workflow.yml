@@ -59,20 +59,22 @@ jobs:
             Remove-Item $file -Recurse -Force
           }
         }
-        # $zipFileName = "${{env.targetName}}.zip"
-        # if(Test-Path $zipFileName){
-        #   Remove-Item $zipFileName -Force
-        # }
+        $zipFileName = "${{env.targetName}}.zip"
+        if(Test-Path $zipFileName){
+          Remove-Item $zipFileName -Force
+        }
 
-        # # contains the relative path to the file to be compressed
-        # Get-ChildItem -Path ./ | Compress-Archive -DestinationPath ${{env.targetName}}.zip
+        # contains the relative path to the file to be compressed
+        Get-ChildItem -Path ./ | Compress-Archive -DestinationPath ${{env.targetName}}.zip
 
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          D:/a/Warcraft_sdu/Warcraft_sdu/build/Release/*
+          D:/a/Warcraft_sdu/Warcraft_sdu/build/Release/*.zip
+          D:/a/Warcraft_sdu/Warcraft_sdu/build/Release/${{env.targetName}}_CLI.zip
+          LICENSE
         tag_name: ${{github.ref}}
         body: |
           ${{github.ref}}
