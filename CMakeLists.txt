@@ -3,12 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 # set the project name
 project(${PROJECT_NAME} Warcraft VERSION 1.0.0 LANGUAGES CXX)
 
-if(MSVC)
-    set(CMAKE_PREFIX_PATH $ENV{QTDIR})
-else()
-    set(CMAKE_PREFIX_PATH $ENV{QTDIRMINGW})    
-endif()
-
+set(CMAKE_PREFIX_PATH ${QT_ROOT_DIR})
 
 # set qt toolchain
 set(CMAKE_AUTOUIC ON)
