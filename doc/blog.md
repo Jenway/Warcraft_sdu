@@ -55,3 +55,9 @@
 ### 在尝试 GitHub Actions
 
 我大概在五月末的时候帮 `dadawufufu` 重新写了一次，可能是因为看了一篇组合优于继承的什么文章，把city组合进了headquater里面，好多了
+
+现在是 2023 年的 9 月 10 日，完成了用 Github Actions 自动构建并发布到 release 上。
+
+是时候 archive 这个 repo 了。
+
+我现在在听 Barricades。

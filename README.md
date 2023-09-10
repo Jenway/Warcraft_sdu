@@ -25,3 +25,9 @@ CMake
 `Warcraft_CLI` 版本为命令行输入输出，而另一个 `Warcraft` 则是图形界面。
 
 详细的使用方法请参考 [输入样例](./doc/INTRO.md)
+
+## 自动构建
+
+使用 Github Actions 进行自动构建，每次 push tag 时会自动构建，生成的文件会上传到 release 中。
+
+参见 [workflow.yml](./.github/workflows/workflow.yml)
