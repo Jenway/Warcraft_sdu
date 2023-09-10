@@ -18,13 +18,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: msys2/setup-msys2@latest
+    - uses: msys2/setup-msys2@v2
       with:
           install: mingw-w64-x86_64-toolchain
           msystem: mingw64
           release: false
     - name: Install Qt
-      uses: jurplel/install-qt-action@latest
+      uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.0'
         host: 'windows'
