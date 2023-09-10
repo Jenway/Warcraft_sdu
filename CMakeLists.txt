@@ -5,6 +5,10 @@ project(${PROJECT_NAME} Warcraft VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_PREFIX_PATH ${QT_ROOT_DIR})
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
+
 # set qt toolchain
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
