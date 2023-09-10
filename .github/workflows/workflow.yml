@@ -51,7 +51,7 @@ jobs:
       run: |
         cd ${{github.workspace}}/build/${{env.BUILD_TYPE}}
 
-        windeployqt.exe ${env.targetName}.exe
+        windeployqt.exe ${{env.targetName}}.exe
 
         $fileList = @("Qt6Network.dll","Qt6Pdf.dll","Qt6Svg.dll","opengl32sw.dll","translations","tls","generic","iconengines","networkinformation","D3Dcompiler_47.dll","imageformats/qgif.dll","imageformats/qicns.dll","imageformats/qico.dll","imageformats/qpdf.dll","imageformats/qsvg.dll","imageformats/qtga.dll","imageformats/qtiff.dll","imageformats/qwbmp.dll","imageformats/qwebp.dll")
 
@@ -60,7 +60,6 @@ jobs:
             Remove-Item $file -Recurse -Force
           }
         }
-
         $zipFileName = "${{env.targetName}}.zip"
         if(Test-Path $zipFileName){
           Remove-Item $zipFileName -Force
