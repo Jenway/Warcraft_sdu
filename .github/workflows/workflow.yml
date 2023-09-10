@@ -3,8 +3,8 @@ name: Build
 on:
   push:
     branches: [ "master" ]
-    # tags:
-    #   - "v*"  # Push events to matching v*, i.e. v1.0, v20.15.10
+    tags:
+      - "v*"  # Push events to matching v*, i.e. v1.0, v20.15.10
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -46,15 +46,38 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build '${{github.workspace}}/build' -v --config ${{ env.BUILD_TYPE }}
     
+
+    - name: Package
+      run: |
+        cd ${{github.workspace}}/build/${{env.BUILD_TYPE}}
+
+        windeployqt.exe ${env.targetName}.exe
+
+        $fileList = @("Qt6Network.dll","Qt6Pdf.dll","Qt6Svg.dll","opengl32sw.dll","translations","tls","generic","iconengines","networkinformation","D3Dcompiler_47.dll","imageformats/qgif.dll","imageformats/qicns.dll","imageformats/qico.dll","imageformats/qpdf.dll","imageformats/qsvg.dll","imageformats/qtga.dll","imageformats/qtiff.dll","imageformats/qwbmp.dll","imageformats/qwebp.dll")
+
+        foreach($file in $fileList){
+          if(Test-Path $file){
+            Remove-Item $file -Recurse -Force
+          }
+        }
+
+        $zipFileName = "${{env.targetName}}.zip"
+        if(Test-Path $zipFileName){
+          Remove-Item $zipFileName -Force
+        }
+
+        # contains the relative path to the file to be compressed
+        Get-ChildItem -Path ./ | Compress-Archive -DestinationPath ${{env.targetName}}.zip
+
     - name: Release
       uses: softprops/action-gh-release@v1
-    #   if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          ${{github.workspace}}/build/${{env.BUILD_TYPE}}/${{env.targetName}}.exe
-        # tag_name: ${{github.ref}}
-        # body: |
-        #   ${{github.ref}}
-        # draft: false
-        # prerelease: false
+          ${{github.workspace}}/build/${{env.BUILD_TYPE}}/${{env.targetName}}.zip
+        tag_name: ${{github.ref}}
+        body: |
+          ${{github.ref}}
+        draft: false
+        prerelease: false
         token: ${{secrets.RELEASE_TOKEN}}
