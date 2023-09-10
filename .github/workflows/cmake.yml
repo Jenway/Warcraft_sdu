@@ -12,19 +12,10 @@ env:
 
 jobs:
   build:
-    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
-    # You can convert this to a matrix build if you need cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: windows-latest
 
     steps:
     
-    # - uses: msys2/setup-msys2@v2
-    #   with:
-    #       install: mingw-w64-x86_64-toolchain
-    #       msystem: mingw64
-    #       release: false
-
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
@@ -32,18 +23,14 @@ jobs:
         host: 'windows'
         target: 'desktop'
         arch: 'win64_msvc2019_64'
-        dir: '${{github.workspace}}/qt/'
         install-deps: 'true'
-    
-    # - name: List files in Qt
-      # run: find ${{env.Qt6_Dir}}
       
     - uses: actions/checkout@v3
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -DCMAKE_BUILD_TYPE=Release -B '${{ github.workspace }}/build'
+      run: cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -B '${{ github.workspace }}/build'
     
     - name: Build
       # Build your program with the given configuration
